@@ -16,14 +16,16 @@ enough to launch on.
 - **Supabase** — supabase.com, free tier
 - **Railway** — railway.app
 
-Create a project and choose **Singapore (ap-southeast-1)**. Neon's free tier
-does not offer Mumbai, and Singapore is the closest region to India at roughly
-40ms. The app is pinned to the same region in `vercel.json` (`"regions":
-["sin1"]`) so the server code sits next to the database rather than shouting
-across the Pacific at it: a page makes several queries, and each one pays the
-distance.
+The `vercel integration add neon` command provisions in **us-east-1**, so
+`vercel.json` pins the server code to `iad1` (Washington) to sit beside it. What
+matters most is that the two match: a page makes several database queries, and
+each one pays the distance between them.
 
-If you later move the database to another region, change that line to match.
+A database in Singapore would serve Indian customers noticeably faster, roughly
+50-80ms against 250-300ms from Virginia. Neon cannot move a project between
+regions, so that means creating a new one in `ap-southeast-1` and reseeding,
+then changing this line to `["sin1"]`. Worth doing before real customers, not
+worth blocking a launch on.
 
 Copy the connection string. It looks like:
 
