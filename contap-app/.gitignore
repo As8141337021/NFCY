@@ -1,6 +1,0 @@
-node_modules
-.next
-.env
-.pgdata
-*.log
-next-env.d.ts
