@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/client';
 import { useToast } from '@/components/Toast';
-import { TextField, SelectField, TextArea } from '@/components/forms';
+import { TextField, SelectField, TextArea, Check } from '@/components/forms';
 
 export type Line = { id: string; productName: string; quantity: number; cardSerial: string | null; needsCard: boolean };
 
@@ -95,6 +95,7 @@ export default function OrderActions({
   const [note, setNote] = useState('');
   const [statusBusy, setStatusBusy] = useState(false);
   const [statusError, setStatusError] = useState('');
+  const [allowUnpaid, setAllowUnpaid] = useState(false);
 
   const [ship, setShip] = useState({
     courier: shipment?.courier ?? '',
@@ -110,7 +111,9 @@ export default function OrderActions({
   async function saveStatus() {
     setStatusBusy(true);
     setStatusError('');
-    const res = await api(`/api/admin/orders/${orderId}/status`, { json: { status: next, note: note || null } });
+    const res = await api(`/api/admin/orders/${orderId}/status`, {
+      json: { status: next, note: note || null, allowUnpaid },
+    });
     setStatusBusy(false);
     if (!res.ok) {
       setStatusError(res.error.message);
@@ -193,7 +196,7 @@ export default function OrderActions({
         </div>
       ) : null}
 
-      {paid && status !== 'ACTIVATED' && status !== 'CANCELLED' && lines.some((l) => l.needsCard) ? (
+      {status !== 'ACTIVATED' && status !== 'CANCELLED' && lines.some((l) => l.needsCard) ? (
         <div className="card">
           <div className="card-head">
             <h2>Activate the card</h2>
@@ -202,6 +205,7 @@ export default function OrderActions({
             The customer normally does this from their own dashboard. Do it here when they cannot: a card handed over
             the counter, or someone who would rather you did it. It points their cards at their profile and publishes
             the profile, so the card is never a dead link.
+            {!paid ? ' This order is still unpaid, and activating it will say so on the record.' : ''}
           </p>
           {actError ? <p className="form-error" role="alert">{actError}</p> : null}
           <button type="button" className="btn btn-accent" onClick={() => void activateCards()} disabled={actBusy}>
@@ -217,6 +221,25 @@ export default function OrderActions({
         </div>
         {statusError ? <p className="form-error" role="alert">{statusError}</p> : null}
         <div className="form">
+          {!paid && status !== 'CANCELLED' ? (
+            <div className="field">
+              <Check
+                label={
+                  <>
+                    <b>Move this order even though it has not been paid for</b>
+                    <br />
+                    <span className="muted small">
+                      For cash on delivery, or when you have agreed payment separately. The cards are made so
+                      production can start, and the order history records that money is still owed and who decided
+                      to proceed.
+                    </span>
+                  </>
+                }
+                checked={allowUnpaid}
+                onChange={(e) => setAllowUnpaid(e.target.checked)}
+              />
+            </div>
+          ) : null}
           <SelectField label="Status" value={next} onChange={(e) => setNext(e.target.value)}>
             {STATUSES.map((s) => (
               <option key={s} value={s}>{LABELS[s] ?? s}</option>

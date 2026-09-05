@@ -4,6 +4,7 @@ import { requireStaff, HttpError } from '@/lib/auth';
 import { audit } from '@/lib/audit';
 import { notify } from '@/lib/notify';
 import { profileUrl } from '@/lib/qr';
+import { mintCardsForOrderUnpaid } from '@/lib/orders';
 
 export const runtime = 'nodejs';
 
@@ -20,7 +21,7 @@ export const POST = handler(async (req, ctx: { params: Promise<{ id: string }> }
   const staff = await requireStaff('orders.update');
   const { id } = await ctx.params;
 
-  const order = await db.order.findUnique({
+  let order = await db.order.findUnique({
     where: { id },
     include: {
       user: { select: { id: true, email: true, name: true } },
@@ -28,8 +29,17 @@ export const POST = handler(async (req, ctx: { params: Promise<{ id: string }> }
     },
   });
   if (!order) throw new HttpError(404, 'No such order.', 'not_found');
+  // On a cash on delivery order nothing was minted at payment, so mint it now.
+  // Staff reaching this route have already chosen to fulfil an unpaid order.
   if (!order.paidAt) {
-    throw new HttpError(409, 'Take the payment first. An unpaid order has no cards to activate.', 'not_paid');
+    await mintCardsForOrderUnpaid(id);
+    order = (await db.order.findUnique({
+      where: { id },
+      include: {
+        user: { select: { id: true, email: true, name: true } },
+        items: { include: { cards: true } },
+      },
+    }))!;
   }
   if (!order.user) {
     throw new HttpError(
@@ -96,7 +106,8 @@ export const POST = handler(async (req, ctx: { params: Promise<{ id: string }> }
     data: {
       orderId: id,
       status: 'ACTIVATED',
-      note: `${cards.length} card${cards.length === 1 ? '' : 's'} activated on /${profile.username} by ${staff.name}.`,
+      note: `${cards.length} card${cards.length === 1 ? '' : 's'} activated on /${profile.username} by ${staff.name}.`
+        + (order.paidAt ? '' : ' This order is still unpaid.'),
       actorId: staff.id,
     },
   });

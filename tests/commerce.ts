@@ -589,21 +589,29 @@ const run = async () => {
     });
     const oid = fresh.data?.orderId ?? '';
 
-    const beforePaying = await admin3.json(`/api/admin/orders/${oid}/activate`, { json: {} });
-    check('an unpaid order has no cards to activate', beforePaying.status === 409, beforePaying.error);
-
-    await admin3.json(`/api/admin/orders/${oid}/payment`, { json: { method: 'cash' } });
-
     const custTry = await c.json(`/api/admin/orders/${oid}/activate`, { json: {} });
     check('a customer cannot use the staff activation route', custTry.status === 403 || custTry.status === 401, {
       status: custTry.status,
     });
 
+    // Cash on delivery: the card is made and posted, the money is collected at
+    // the door. Staff can fulfil before the money arrives.
+    const codCards = await db.nfcCard.count({ where: { orderItem: { orderId: oid } } });
+    check('an unpaid order has no cards of its own yet', codCards === 0, { cards: codCards });
+
     const done = await admin3.json<{ activated: number; username: string }>(`/api/admin/orders/${oid}/activate`, {
       json: {},
     });
-    check('an admin can activate the cards for the customer', done.ok && done.data.activated > 0, done.error);
+    check('an admin can still activate it, for cash on delivery', done.ok && done.data.activated > 0, done.error);
     check('it reports which profile they now open', done.data?.username === username, done.data);
+
+    const minted = await db.nfcCard.count({ where: { orderItem: { orderId: oid } } });
+    check('the cards were made so production can start', minted > 0, { cards: minted });
+
+    const owed = await db.orderStatusEvent.findFirst({
+      where: { orderId: oid, note: { contains: 'still unpaid' } },
+    });
+    check('and the record says the money is still owed', Boolean(owed), owed?.note);
 
     const card = await db.nfcCard.findFirst({ where: { orderItem: { orderId: oid } } });
     check('the card is active and pointed at the profile', card?.status === 'ACTIVE' && card?.profileId === profileId, card);
@@ -613,6 +621,51 @@ const run = async () => {
 
     const again = await admin3.json(`/api/admin/orders/${oid}/activate`, { json: {} });
     check('activating twice is refused rather than duplicated', again.status === 409, again.error);
+  }
+
+  // ============================================================
+  section('11e. Moving an unpaid order along, deliberately');
+
+  {
+    const admin4 = new Client('admin5');
+    await admin4.json('/api/auth/login', {
+      json: { email: process.env.SEED_ADMIN_EMAIL ?? 'admin@nfcy.in', password: process.env.SEED_ADMIN_PASSWORD ?? 'ChangeThisNow!2026' },
+    });
+
+    const cod = await c.json<{ orderId: string }>('/api/orders', {
+      json: { ...checkoutBody, idempotencyKey: crypto.randomUUID() },
+    });
+    const codId = cod.data?.orderId ?? '';
+
+    const byAccident = await admin4.json(`/api/admin/orders/${codId}/status`, { json: { status: 'MANUFACTURING' } });
+    check('an unpaid order is not moved by accident', byAccident.status === 409, byAccident.error);
+    check('and the message says how to proceed', byAccident.error?.message.includes('tick the box') === true, byAccident.error);
+
+    const onPurpose = await admin4.json(`/api/admin/orders/${codId}/status`, {
+      json: { status: 'MANUFACTURING', allowUnpaid: true, note: 'Cash on delivery.' },
+    });
+    check('it moves when staff ask for it deliberately', onPurpose.ok, onPurpose.error);
+
+    const cards = await db.nfcCard.count({ where: { orderItem: { orderId: codId } } });
+    check('the cards are made so it can actually be produced', cards > 0, { cards });
+
+    const owed = await db.orderStatusEvent.findFirst({
+      where: { orderId: codId, note: { contains: 'Money is still owed' } },
+    });
+    check('the history records that money is still owed, and who decided', Boolean(owed), owed?.note);
+
+    const trail = await db.auditLog.findFirst({
+      where: { entityId: codId, action: 'order.status_changed_while_unpaid' },
+    });
+    check('and the audit log separates it from an ordinary status change', Boolean(trail), trail);
+
+    const stillUnpaid = await db.order.findUnique({ where: { id: codId }, select: { paidAt: true, status: true } });
+    check('the order is moved but still honestly unpaid', stillUnpaid?.paidAt === null, stillUnpaid);
+
+    const collected = await admin4.json(`/api/admin/orders/${codId}/payment`, {
+      json: { method: 'cash', reference: 'COD collected at the door' },
+    });
+    check('and the money can be recorded when it is collected', collected.ok, collected.error);
   }
 
   // ============================================================

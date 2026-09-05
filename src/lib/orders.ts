@@ -202,11 +202,27 @@ export async function applyRenewal(userId: string, orderId: string, priceMinor: 
  * arrives twice does not mint a second set.
  */
 export async function mintCardsForOrder(orderId: string): Promise<number> {
+  return mintCards(orderId, false);
+}
+
+/**
+ * The same, for an order that has not been paid for.
+ *
+ * Only reached when a member of staff deliberately moves a cash on delivery
+ * order into production. Kept as a separate, awkwardly named entry point so it
+ * can never be called by accident from the ordinary payment path.
+ */
+export async function mintCardsForOrderUnpaid(orderId: string): Promise<number> {
+  return mintCards(orderId, true);
+}
+
+async function mintCards(orderId: string, allowUnpaid: boolean): Promise<number> {
   const order = await db.order.findUnique({
     where: { id: orderId },
     include: { items: { include: { product: true, cards: { select: { id: true } } } } },
   });
-  if (!order?.paidAt) return 0;
+  if (!order) return 0;
+  if (!order.paidAt && !allowUnpaid) return 0;
 
   let made = 0;
 

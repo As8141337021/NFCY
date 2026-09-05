@@ -406,6 +406,15 @@ export const adminOrderStatusSchema = z.object({
     'DESIGN_PROCESSING', 'MANUFACTURING', 'DISPATCHED', 'DELIVERED', 'ACTIVATED', 'CANCELLED',
   ]),
   note: optionalText(500),
+  /**
+   * Move an order that has not been paid for.
+   *
+   * Cash on delivery is ordinary here: the card is made and posted, and the
+   * money is collected at the door. Refusing to move an unpaid order made that
+   * impossible. This has to be asked for explicitly, so nothing else in the
+   * system can advance an unpaid order by accident, and it is recorded.
+   */
+  allowUnpaid: z.boolean().default(false),
 });
 
 export const shipmentSchema = z.object({
