@@ -520,6 +520,102 @@ const run = async () => {
   }
 
   // ============================================================
+  section('11c. Payment taken outside the gateway');
+
+  {
+    const admin2 = new Client('admin3');
+    await admin2.json('/api/auth/login', {
+      json: { email: process.env.SEED_ADMIN_EMAIL ?? 'admin@nfcy.in', password: process.env.SEED_ADMIN_PASSWORD ?? 'ChangeThisNow!2026' },
+    });
+
+    const placed = await c.json<{ orderId: string }>('/api/orders', {
+      json: { ...checkoutBody, idempotencyKey: crypto.randomUUID() },
+    });
+    const offlineOrderId = placed.data?.orderId ?? '';
+    check('an order starts unpaid', placed.ok, placed.error);
+
+    // an unpaid order must not be pushed down the line
+    const tooSoon = await admin2.json(`/api/admin/orders/${offlineOrderId}/status`, {
+      json: { status: 'DISPATCHED' },
+    });
+    check('an unpaid order cannot be marched forward', tooSoon.status === 409, tooSoon.error);
+
+    const custTry = await c.json(`/api/admin/orders/${offlineOrderId}/payment`, { json: { method: 'cash' } });
+    check('a customer cannot record a payment on their own order', custTry.status === 403 || custTry.status === 401, {
+      status: custTry.status,
+    });
+
+    const taken = await admin2.json<{ status: string; paidAt: string }>(`/api/admin/orders/${offlineOrderId}/payment`, {
+      json: { method: 'upi', reference: 'UPI-TEST-001' },
+    });
+    check('an admin can record a payment taken in cash or by UPI', taken.ok, taken.error);
+    check('the order is now paid', Boolean(taken.data?.paidAt), taken.data);
+
+    const cards = await db.nfcCard.count({ where: { orderItem: { orderId: offlineOrderId } } });
+    check('recording it created the cards, exactly as the gateway would', cards > 0, { cards });
+
+    const invoice = await db.invoice.findFirst({ where: { orderId: offlineOrderId } });
+    check('and raised the invoice', Boolean(invoice), invoice);
+
+    const twice = await admin2.json(`/api/admin/orders/${offlineOrderId}/payment`, { json: { method: 'cash' } });
+    check('the same order cannot be paid twice', twice.status === 409, twice.error);
+
+    const event = await db.orderStatusEvent.findFirst({
+      where: { orderId: offlineOrderId, note: { contains: 'UPI-TEST-001' } },
+    });
+    check('the record names the method, the reference and the staff member', Boolean(event), event?.note);
+
+    const trail = await db.auditLog.findFirst({ where: { entityId: offlineOrderId, action: 'order.payment_recorded_offline' } });
+    check('and it is in the audit log', Boolean(trail), trail);
+
+    // now it can move
+    const moves = await admin2.json(`/api/admin/orders/${offlineOrderId}/status`, {
+      json: { status: 'MANUFACTURING' },
+    });
+    check('a paid order can be moved along', moves.ok, moves.error);
+  }
+
+  // ============================================================
+  section('11d. Activating a card for the customer');
+
+  {
+    const admin3 = new Client('admin4');
+    await admin3.json('/api/auth/login', {
+      json: { email: process.env.SEED_ADMIN_EMAIL ?? 'admin@nfcy.in', password: process.env.SEED_ADMIN_PASSWORD ?? 'ChangeThisNow!2026' },
+    });
+
+    const fresh = await c.json<{ orderId: string }>('/api/orders', {
+      json: { ...checkoutBody, idempotencyKey: crypto.randomUUID() },
+    });
+    const oid = fresh.data?.orderId ?? '';
+
+    const beforePaying = await admin3.json(`/api/admin/orders/${oid}/activate`, { json: {} });
+    check('an unpaid order has no cards to activate', beforePaying.status === 409, beforePaying.error);
+
+    await admin3.json(`/api/admin/orders/${oid}/payment`, { json: { method: 'cash' } });
+
+    const custTry = await c.json(`/api/admin/orders/${oid}/activate`, { json: {} });
+    check('a customer cannot use the staff activation route', custTry.status === 403 || custTry.status === 401, {
+      status: custTry.status,
+    });
+
+    const done = await admin3.json<{ activated: number; username: string }>(`/api/admin/orders/${oid}/activate`, {
+      json: {},
+    });
+    check('an admin can activate the cards for the customer', done.ok && done.data.activated > 0, done.error);
+    check('it reports which profile they now open', done.data?.username === username, done.data);
+
+    const card = await db.nfcCard.findFirst({ where: { orderItem: { orderId: oid } } });
+    check('the card is active and pointed at the profile', card?.status === 'ACTIVE' && card?.profileId === profileId, card);
+
+    const prof = await db.profile.findUnique({ where: { id: profileId }, select: { status: true } });
+    check('and the profile is published, so the card is not a dead link', prof?.status === 'PUBLISHED', prof);
+
+    const again = await admin3.json(`/api/admin/orders/${oid}/activate`, { json: {} });
+    check('activating twice is refused rather than duplicated', again.status === 409, again.error);
+  }
+
+  // ============================================================
   section('12. Invoice and orders');
 
   {

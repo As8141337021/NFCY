@@ -146,3 +146,21 @@ It stops being right when the catalogues get big: a free Postgres tier is
 around 0.5GB, and a dozen 10MB brochures will fill it. When that day comes,
 switch `STORAGE_DRIVER` to `s3` and add the bucket credentials; existing rows
 keep working, because each asset records which driver stored it.
+
+---
+
+## A trap worth knowing about
+
+`vercel link`, `vercel env pull` and `vercel integration add` all write a
+`.env.local` holding the **production** database URL. Next.js loads `.env.local`
+ahead of `.env`, so from that moment `npm run dev` on your machine is talking to
+the live database, and running the test suites would write test orders into it.
+
+Delete `.env.local` after using it:
+
+```
+rm .env.local
+```
+
+It is gitignored, so it never reaches GitHub, but it will quietly redirect your
+local development until you remove it.

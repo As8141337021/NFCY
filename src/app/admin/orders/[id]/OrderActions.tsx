@@ -26,16 +26,27 @@ const LABELS: Record<string, string> = {
   CANCELLED: 'Cancelled',
 };
 
+const PAY_METHODS = [
+  ['cash', 'Cash'],
+  ['upi', 'UPI'],
+  ['bank_transfer', 'Bank transfer'],
+  ['card_machine', 'Card machine'],
+  ['cheque', 'Cheque'],
+  ['other', 'Something else'],
+] as const;
+
 export default function OrderActions({
   orderId,
   status,
   paid,
+  total,
   lines,
   shipment,
 }: {
   orderId: string;
   status: string;
   paid: boolean;
+  total: string;
   lines: Line[];
   shipment: { courier: string; awb: string; trackingUrl: string; status: string; estimatedDelivery: string } | null;
 }) {
@@ -43,6 +54,44 @@ export default function OrderActions({
   const { toast } = useToast();
 
   const [next, setNext] = useState(status);
+  const [payMethod, setPayMethod] = useState<string>('cash');
+  const [payRef, setPayRef] = useState('');
+  const [payBusy, setPayBusy] = useState(false);
+  const [payError, setPayError] = useState('');
+  const [actBusy, setActBusy] = useState(false);
+  const [actError, setActError] = useState('');
+
+  async function recordPayment() {
+    if (!window.confirm(`Record ${total} received for this order? This creates the cards and the invoice.`)) return;
+    setPayBusy(true);
+    setPayError('');
+    const res = await api(`/api/admin/orders/${orderId}/payment`, {
+      json: { method: payMethod, reference: payRef || null },
+    });
+    setPayBusy(false);
+    if (!res.ok) {
+      setPayError(res.error.message);
+      return;
+    }
+    toast('Payment recorded, cards created');
+    router.refresh();
+  }
+
+  async function activateCards() {
+    setActBusy(true);
+    setActError('');
+    const res = await api<{ activated: number; username: string }>(`/api/admin/orders/${orderId}/activate`, {
+      json: {},
+    });
+    setActBusy(false);
+    if (!res.ok) {
+      setActError(res.error.message);
+      return;
+    }
+    toast(`Activated on /${res.data.username}, profile is live`);
+    router.refresh();
+  }
+
   const [note, setNote] = useState('');
   const [statusBusy, setStatusBusy] = useState(false);
   const [statusError, setStatusError] = useState('');
@@ -108,6 +157,59 @@ export default function OrderActions({
           </p>
         </div>
       )}
+
+      {!paid && status !== 'CANCELLED' ? (
+        <div className="card" style={{ borderColor: 'rgba(52,224,240,.45)' }}>
+          <div className="card-head">
+            <h2>Payment taken outside the gateway</h2>
+            <span className="pill warn">unpaid</span>
+          </div>
+          <p className="muted small" style={{ marginBottom: 16 }}>
+            Use this when the customer paid you directly: cash in the shop, UPI, a bank transfer. It marks the order
+            paid for {total}, raises the invoice and creates the cards, exactly as an online payment would. Your name
+            goes on the record.
+          </p>
+          {payError ? <p className="form-error" role="alert">{payError}</p> : null}
+          <div className="form">
+            <div className="form-grid-2">
+              <SelectField label="How did they pay" value={payMethod} onChange={(e) => setPayMethod(e.target.value)}>
+                {PAY_METHODS.map(([v, l]) => (
+                  <option key={v} value={v}>{l}</option>
+                ))}
+              </SelectField>
+              <TextField
+                label="Reference"
+                value={payRef}
+                onChange={(e) => setPayRef(e.target.value)}
+                placeholder="UPI id, cheque number, receipt number"
+                hint="Optional, but worth having."
+              />
+            </div>
+            <button type="button" className="btn btn-accent" onClick={() => void recordPayment()} disabled={payBusy}>
+              {payBusy ? <span className="spinner" aria-hidden="true" /> : null}
+              {payBusy ? 'Recording' : `Record ${total} received`}
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {paid && status !== 'ACTIVATED' && status !== 'CANCELLED' && lines.some((l) => l.needsCard) ? (
+        <div className="card">
+          <div className="card-head">
+            <h2>Activate the card</h2>
+          </div>
+          <p className="muted small" style={{ marginBottom: 16 }}>
+            The customer normally does this from their own dashboard. Do it here when they cannot: a card handed over
+            the counter, or someone who would rather you did it. It points their cards at their profile and publishes
+            the profile, so the card is never a dead link.
+          </p>
+          {actError ? <p className="form-error" role="alert">{actError}</p> : null}
+          <button type="button" className="btn btn-accent" onClick={() => void activateCards()} disabled={actBusy}>
+            {actBusy ? <span className="spinner" aria-hidden="true" /> : null}
+            {actBusy ? 'Activating' : 'Activate and publish the profile'}
+          </button>
+        </div>
+      ) : null}
 
       <div className="card">
         <div className="card-head">

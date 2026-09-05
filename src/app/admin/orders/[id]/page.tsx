@@ -213,6 +213,7 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
             orderId={order.id}
             status={order.status}
             paid={Boolean(order.paidAt)}
+            total={rupees(order.totalMinor)}
             lines={order.items.map((i) => ({
               id: i.id,
               productName: i.productName,

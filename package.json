@@ -18,7 +18,8 @@
     "test:profile": "tsx tests/run.ts",
     "test:commerce": "tsx tests/commerce.ts",
     "test:pages": "tsx tests/pages.ts",
-    "build:local": "prisma generate && next build"
+    "build:local": "prisma generate && next build",
+    "db:which": "node scripts/which-db.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

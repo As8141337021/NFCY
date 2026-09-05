@@ -312,6 +312,16 @@ export const cartItemSchema = z.object({
 });
 
 /** The artwork a printed card needs, set after the order is paid for. */
+/**
+ * A payment taken outside the gateway: cash in the shop, a UPI transfer, a
+ * bank deposit. Recorded by a member of staff who saw the money arrive.
+ */
+export const offlinePaymentSchema = z.object({
+  method: z.enum(['cash', 'upi', 'bank_transfer', 'card_machine', 'cheque', 'other']),
+  reference: optionalText(80),
+  note: optionalText(300),
+});
+
 export const orderArtworkSchema = z.object({
   orderItemId: z.string().uuid(),
   photoMediaId: z.string().uuid(),
