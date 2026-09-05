@@ -16,9 +16,16 @@ enough to launch on.
 - **Supabase** — supabase.com, free tier
 - **Railway** — railway.app
 
-Create a project, choose a region near your customers (**Mumbai / ap-south-1**
-if offered — every page load talks to the database, so distance is latency),
-and copy the connection string. It looks like:
+Create a project and choose **Singapore (ap-southeast-1)**. Neon's free tier
+does not offer Mumbai, and Singapore is the closest region to India at roughly
+40ms. The app is pinned to the same region in `vercel.json` (`"regions":
+["sin1"]`) so the server code sits next to the database rather than shouting
+across the Pacific at it: a page makes several queries, and each one pays the
+distance.
+
+If you later move the database to another region, change that line to match.
+
+Copy the connection string. It looks like:
 
 ```
 postgresql://user:password@host.region.provider.tech/dbname?sslmode=require
