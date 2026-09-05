@@ -221,17 +221,21 @@ export default function OrderActions({
         </div>
         {statusError ? <p className="form-error" role="alert">{statusError}</p> : null}
         <div className="form">
-          {!paid && status !== 'CANCELLED' ? (
+          {!paid ? (
             <div className="field">
               <Check
                 label={
                   <>
-                    <b>Move this order even though it has not been paid for</b>
+                    <b>
+                      {status === 'CANCELLED'
+                        ? 'Reinstate this cancelled order, which has not been paid for'
+                        : 'Move this order even though it has not been paid for'}
+                    </b>
                     <br />
                     <span className="muted small">
-                      For cash on delivery, or when you have agreed payment separately. The cards are made so
-                      production can start, and the order history records that money is still owed and who decided
-                      to proceed.
+                      {status === 'CANCELLED'
+                        ? 'A cancelled order is not paid for, so moving it back needs the same permission. Pick the status you want and it will be reinstated.'
+                        : 'For cash on delivery, or when you have agreed payment separately. The cards are made so production can start, and the order history records that money is still owed and who decided to proceed.'}
                     </span>
                   </>
                 }

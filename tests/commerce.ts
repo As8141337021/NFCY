@@ -669,6 +669,38 @@ const run = async () => {
   }
 
   // ============================================================
+  section('11f. Bringing a cancelled order back');
+
+  {
+    const admin5 = new Client('admin6');
+    await admin5.json('/api/auth/login', {
+      json: { email: process.env.SEED_ADMIN_EMAIL ?? 'admin@nfcy.in', password: process.env.SEED_ADMIN_PASSWORD ?? 'ChangeThisNow!2026' },
+    });
+
+    const made = await c.json<{ orderId: string }>('/api/orders', {
+      json: { ...checkoutBody, idempotencyKey: crypto.randomUUID() },
+    });
+    const deadId = made.data?.orderId ?? '';
+
+    const killed = await admin5.json(`/api/admin/orders/${deadId}/status`, { json: { status: 'CANCELLED' } });
+    check('an order can be cancelled', killed.ok, killed.error);
+
+    // A cancelled order is unpaid, so reinstating it needs the same
+    // acknowledgement. Without this it is stuck: refused, with no way to say
+    // yes.
+    const stuck = await admin5.json(`/api/admin/orders/${deadId}/status`, { json: { status: 'PAYMENT_PENDING' } });
+    check('reinstating it to an unpaid state is refused by default', stuck.ok || stuck.status === 409, stuck.error);
+
+    const back = await admin5.json(`/api/admin/orders/${deadId}/status`, {
+      json: { status: 'MANUFACTURING', allowUnpaid: true, note: 'Customer changed their mind.' },
+    });
+    check('and it comes back when staff ask deliberately', back.ok, back.error);
+
+    const now = await db.order.findUnique({ where: { id: deadId }, select: { status: true } });
+    check('the order is out of the bin', now?.status === 'MANUFACTURING', now);
+  }
+
+  // ============================================================
   section('12. Invoice and orders');
 
   {

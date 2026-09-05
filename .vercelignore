@@ -1,0 +1,13 @@
+# Vercel installs dependencies and builds on its own machine, so none of this
+# needs uploading. Without it the CLI sends 85MB and the upload times out.
+node_modules
+.next
+.pgdata
+.git
+review
+_skill_extract
+*.zip
+*.log
+tests
+contap
+design-package.md
