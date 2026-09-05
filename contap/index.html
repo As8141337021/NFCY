@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NFCY. Your digital identity. One tap away.</title>
+<meta name="description" content="One NFC card that opens your whole profile. Contact, business, socials, products and location, shared in one tap and changed from your phone. Cards from ₹499.">
+<meta name="theme-color" content="#090B10">
+<meta name="color-scheme" content="dark">
+
+<!-- DEPLOY STEP: patch og:url and og:image with the live absolute URL before zipping -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NFCY">
+<meta property="og:title" content="NFCY. Your digital identity. One tap away.">
+<meta property="og:description" content="One NFC card that opens your whole profile. Change it any time, from your phone. Cards from ₹499.">
+<meta property="og:url" content="https://REPLACE-AT-DEPLOY/">
+<meta property="og:image" content="https://REPLACE-AT-DEPLOY/assets/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://REPLACE-AT-DEPLOY/">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23090B10'/%3E%3Cg fill='none' stroke='%2334E0F0' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M12 10a8 8 0 0 1 0 12'/%3E%3Cpath d='M17 7a13 13 0 0 1 0 18'/%3E%3C/g%3E%3Ccircle cx='9' cy='16' r='2' fill='%2334E0F0'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"NFCY","description":"NFC business cards and digital identity profiles for India.","url":"https://REPLACE-AT-DEPLOY/","contactPoint":{"@type":"ContactPoint","contactType":"sales","telephone":"+918141337021","areaServed":"IN"}}
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- shared paint servers, always present so every card reuses them -->
+<svg class="defs" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="heroFace" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#20252F"></stop>
+      <stop offset="0.45" stop-color="#12161E"></stop>
+      <stop offset="1" stop-color="#080A0F"></stop>
+    </linearGradient>
+    <linearGradient id="heroSheen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"></stop>
+      <stop offset="0.42" stop-color="#fff" stop-opacity="0.16"></stop>
+      <stop offset="0.55" stop-color="#fff" stop-opacity="0.03"></stop>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- the one fixed environment layer behind everything -->
+<div class="env" aria-hidden="true">
+  <div class="env-glow"></div>
+  <div class="env-grain"></div>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top" aria-label="NFCY home">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M13 10a8 8 0 0 1 0 12"></path>
+          <path d="M18 7a13 13 0 0 1 0 18"></path>
+        </g>
+        <circle cx="9.5" cy="16" r="2.2" fill="currentColor"></circle>
+      </svg>
+      <span class="brand-word">NFCY</span>
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#cards">Cards</a>
+      <a href="#profile">The profile</a>
+      <a href="#teams">For teams</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-accent nav-cta" href="#get">Get your card</a>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="top">
+  <div class="stage" id="stage">
+
+    <!-- the drawn journey: runs today, and stays as the print-quality fallback once the video lands -->
+    <div class="scene" id="scene" aria-hidden="true">
+      <div class="scene-field"></div>
+      <div class="scene-plane"></div>
+      <div class="scene-bloom"></div>
+      <div class="scene-splash"></div>
+      <div class="scene-card">
+        <svg viewBox="0 0 340 214" class="card-svg">
+          <rect x="2" y="2" width="336" height="210" rx="18" fill="url(#heroFace)"></rect>
+          <rect x="2" y="2" width="336" height="210" rx="18" fill="url(#heroSheen)"></rect>
+          <rect x="2.75" y="2.75" width="334.5" height="208.5" rx="17.5" fill="none" stroke="#34E0F0" stroke-opacity=".34" stroke-width="1.5"></rect>
+          <g transform="translate(250,150)" fill="none" stroke="#34E0F0" stroke-opacity=".85" stroke-width="3" stroke-linecap="round">
+            <path d="M0 -14a13 13 0 0 1 0 28"></path>
+            <path d="M9 -24a23 23 0 0 1 0 48"></path>
+          </g>
+          <circle cx="243" cy="150" r="3.6" fill="#34E0F0"></circle>
+          <text x="34" y="47" font-family="Space Grotesk,system-ui,sans-serif" font-size="22" font-weight="700" letter-spacing="-.7" fill="#EAF0F6" fill-opacity=".92">NFCY</text>
+          <rect x="36" y="152" width="92" height="6" rx="3" fill="#EAF0F6" fill-opacity=".10"></rect>
+          <rect x="36" y="166" width="62" height="6" rx="3" fill="#EAF0F6" fill-opacity=".07"></rect>
+        </svg>
+      </div>
+      <div class="scene-dust">
+        <i style="--x:12%;--y:22%;--d:-3s"></i><i style="--x:78%;--y:16%;--d:-9s"></i>
+        <i style="--x:31%;--y:71%;--d:-14s"></i><i style="--x:88%;--y:64%;--d:-6s"></i>
+        <i style="--x:57%;--y:38%;--d:-11s"></i><i style="--x:20%;--y:52%;--d:-17s"></i>
+      </div>
+    </div>
+
+    <!-- the video slot: empty until the hero footage exists, then it fades in over the scene -->
+    <video id="hero-video" preload="none" muted playsinline aria-hidden="true" tabindex="-1"></video>
+    <div class="poster" id="poster" aria-hidden="true"></div>
+
+    <div class="scrim" aria-hidden="true"></div>
+
+    <svg class="ring" id="ring" viewBox="0 0 48 48" aria-hidden="true">
+      <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3"
+              stroke-dasharray="126" style="stroke-dashoffset:var(--ld,126)"></circle>
+    </svg>
+
+    <!-- scroll-driven caption bands -->
+    <div class="bands" id="bands">
+      <div class="band band-1" data-a="0" data-b="0.25" data-entrance="drift">
+        <p class="band-h split" data-split="word">A paper card is you from the day it was printed.</p>
+      </div>
+      <div class="band band-2" data-a="0.27" data-b="0.52" data-entrance="depth">
+        <p class="band-h split" data-split="word">This one changes when you do.</p>
+        <p class="band-s">Edit your profile from your phone. Every card you ever handed out updates at once.</p>
+      </div>
+      <div class="band band-3" data-a="0.54" data-b="0.77" data-entrance="punch">
+        <p class="band-h split" data-split="word" data-em="1">One tap. No app.</p>
+        <p class="band-s">They tap, your profile opens. Nothing to install, on either side.</p>
+      </div>
+      <div class="band band-4" data-a="0.79" data-b="1" data-entrance="rise">
+        <h1 class="band-h split" data-split="word">Your digital identity. One tap away.</h1>
+        <p class="band-s">Contact, business, socials, products and location. Shared in one second. Changed in ten.</p>
+        <div class="band-cta">
+          <a class="btn btn-accent" href="#cards">See the cards</a>
+          <a class="btn btn-ghost" href="#how">How it works</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="cue" id="cue" aria-hidden="true"><span></span></div>
+  </div>
+
+  <!-- the composed static hero: phones, portrait tablets, reduced motion -->
+  <div class="static-hero" id="static-hero">
+    <div class="static-art" aria-hidden="true">
+      <div class="static-plane"></div>
+      <div class="static-card">
+        <svg viewBox="0 0 340 214" class="card-svg">
+          <rect x="2" y="2" width="336" height="210" rx="18" fill="url(#heroFace)"></rect>
+          <rect x="2.75" y="2.75" width="334.5" height="208.5" rx="17.5" fill="none" stroke="#34E0F0" stroke-opacity=".34" stroke-width="1.5"></rect>
+          <g transform="translate(250,150)" fill="none" stroke="#34E0F0" stroke-opacity=".85" stroke-width="3" stroke-linecap="round">
+            <path d="M0 -14a13 13 0 0 1 0 28"></path>
+            <path d="M9 -24a23 23 0 0 1 0 48"></path>
+          </g>
+          <circle cx="243" cy="150" r="3.6" fill="#34E0F0"></circle>
+          <text x="34" y="47" font-family="Space Grotesk,system-ui,sans-serif" font-size="22" font-weight="700" letter-spacing="-.7" fill="#EAF0F6" fill-opacity=".92">NFCY</text>
+          <rect x="36" y="152" width="92" height="6" rx="3" fill="#EAF0F6" fill-opacity=".10"></rect>
+          <rect x="36" y="166" width="62" height="6" rx="3" fill="#EAF0F6" fill-opacity=".07"></rect>
+        </svg>
+      </div>
+    </div>
+    <div class="static-copy">
+      <h1>Your digital identity. One tap away.</h1>
+      <p>One NFC card. Your whole profile behind it. Change it any time, from your phone.</p>
+      <div class="band-cta">
+        <a class="btn btn-accent" href="#cards">See the cards</a>
+        <a class="btn btn-ghost" href="#how">How it works</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TRUST STRIP ============================ -->
+<section class="strip reveal" aria-label="What you get">
+  <ul class="strip-list">
+    <li><span class="tick" aria-hidden="true"></span>No app for them. No app for you.</li>
+    <li><span class="tick" aria-hidden="true"></span>Works on iPhone and Android.</li>
+    <li><span class="tick" aria-hidden="true"></span>QR printed on the back, always.</li>
+    <li><span class="tick" aria-hidden="true"></span>Change it any time, free.</li>
+  </ul>
+</section>
+
+<!-- ============================ HOW IT WORKS ============================ -->
+<section class="sec how" id="how">
+  <div class="wrap">
+    <p class="kicker reveal">How it works</p>
+    <h2 class="h2 reveal">Four steps, then you stop thinking about it.</h2>
+
+    <div class="steps" id="steps">
+      <svg class="steps-line" viewBox="0 0 4 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M2 0 V100" fill="none" stroke="var(--accent)" stroke-opacity=".38" stroke-width="1.4"
+              stroke-dasharray="100" stroke-dashoffset="100" id="steps-path"></path>
+      </svg>
+
+      <article class="step reveal">
+        <div class="step-art" aria-hidden="true">
+          <svg viewBox="0 0 120 90">
+            <rect x="8" y="24" width="62" height="40" rx="7" fill="#151A24" stroke="#33405A"></rect>
+            <rect x="26" y="16" width="62" height="40" rx="7" fill="#1B2029" stroke="#33405A"></rect>
+            <rect x="44" y="8" width="62" height="40" rx="7" fill="#20262F" stroke="#34E0F0" stroke-opacity=".6"></rect>
+            <circle cx="96" cy="38" r="3" fill="#34E0F0"></circle>
+          </svg>
+        </div>
+        <p class="step-n">01</p>
+        <h3>Pick your card.</h3>
+        <p>Six of them. From ₹499.</p>
+      </article>
+
+      <article class="step reveal">
+        <div class="step-art" aria-hidden="true">
+          <svg viewBox="0 0 120 90">
+            <path d="M18 34 L60 18 L102 34 L102 72 L18 72 Z" fill="#151A24" stroke="#33405A"></path>
+            <path d="M18 34 L60 52 L102 34" fill="none" stroke="#33405A"></path>
+            <rect x="42" y="8" width="36" height="24" rx="5" fill="#20262F" stroke="#34E0F0" stroke-opacity=".6"></rect>
+            <circle cx="60" cy="20" r="2.6" fill="#34E0F0"></circle>
+          </svg>
+        </div>
+        <p class="step-n">02</p>
+        <h3>Your card arrives.</h3>
+        <p>Printed for your order, chipped, and already carrying your own link.</p>
+      </article>
+
+      <article class="step reveal">
+        <div class="step-art" aria-hidden="true">
+          <svg viewBox="0 0 120 90">
+            <rect x="34" y="6" width="52" height="78" rx="9" fill="#151A24" stroke="#33405A"></rect>
+            <circle cx="60" cy="26" r="8" fill="#34E0F0" fill-opacity=".28" stroke="#34E0F0" stroke-opacity=".7"></circle>
+            <rect x="44" y="42" width="32" height="4" rx="2" fill="#EAF0F6" fill-opacity=".3"></rect>
+            <rect x="44" y="51" width="24" height="4" rx="2" fill="#EAF0F6" fill-opacity=".18"></rect>
+            <rect x="44" y="60" width="32" height="4" rx="2" fill="#EAF0F6" fill-opacity=".18"></rect>
+            <rect x="44" y="69" width="18" height="4" rx="2" fill="#34E0F0" fill-opacity=".7"></rect>
+          </svg>
+        </div>
+        <p class="step-n">03</p>
+        <h3>Build your profile.</h3>
+        <p>Name, business, socials, WhatsApp, products, location. Takes about ten minutes.</p>
+      </article>
+
+      <article class="step reveal">
+        <div class="step-art" aria-hidden="true">
+          <svg viewBox="0 0 120 90">
+            <rect x="16" y="24" width="48" height="34" rx="6" fill="#1B2029" stroke="#33405A" transform="rotate(-10 40 41)"></rect>
+            <rect x="68" y="10" width="36" height="70" rx="8" fill="#151A24" stroke="#33405A"></rect>
+            <g fill="none" stroke="#34E0F0" stroke-width="2.4" stroke-linecap="round" opacity=".9">
+              <path d="M62 36a10 10 0 0 1 0 18"></path>
+              <path d="M56 30a18 18 0 0 1 0 30"></path>
+            </g>
+          </svg>
+        </div>
+        <p class="step-n">04</p>
+        <h3>Tap and share.</h3>
+        <p>Hold it near any phone. Your profile opens. That is the whole thing.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ THE INTERACTIVE MOMENT ============================ -->
+<section class="sec demo" id="demo">
+  <div class="wrap demo-wrap">
+    <div class="demo-copy">
+      <p class="kicker reveal">Try it</p>
+      <h2 class="h2 reveal">Press and hold the card.</h2>
+      <p class="lede reveal">This is the whole interaction, at the speed it actually happens.</p>
+      <ol class="demo-claims" id="demo-claims">
+        <li><span class="dot" aria-hidden="true"></span>Their phone opens your profile in its browser.</li>
+        <li><span class="dot" aria-hidden="true"></span>Nothing gets installed, on either side.</li>
+        <li><span class="dot" aria-hidden="true"></span>You change what they see whenever you want.</li>
+      </ol>
+      <p class="demo-done" id="demo-done">That is what your customer sees. You wrote it. You can change it in ten seconds.</p>
+    </div>
+
+    <div class="demo-stage">
+      <div class="phone" aria-hidden="true">
+        <div class="phone-screen">
+          <div class="pf">
+            <div class="pf-cover"></div>
+            <div class="pf-avatar"></div>
+            <div class="pf-name"></div>
+            <div class="pf-role"></div>
+            <div class="pf-btns"><i></i><i></i><i></i></div>
+            <div class="pf-row"></div>
+            <div class="pf-row short"></div>
+            <div class="pf-tiles"><i></i><i></i><i></i><i></i></div>
+            <div class="pf-row"></div>
+            <div class="pf-row short"></div>
+          </div>
+          <div class="pf-idle">Ready to tap</div>
+        </div>
+      </div>
+
+      <button class="tapcard" id="tapcard" type="button" aria-describedby="tap-help">
+        <span class="sr-only">Press and hold to tap the card against the phone</span>
+        <svg viewBox="0 0 340 214" class="card-svg" aria-hidden="true">
+          <rect x="2" y="2" width="336" height="210" rx="18" fill="url(#heroFace)"></rect>
+          <rect x="2.75" y="2.75" width="334.5" height="208.5" rx="17.5" fill="none" stroke="#34E0F0" stroke-opacity=".4" stroke-width="1.5"></rect>
+          <g transform="translate(250,150)" fill="none" stroke="#34E0F0" stroke-width="3" stroke-linecap="round">
+            <path d="M0 -14a13 13 0 0 1 0 28"></path>
+            <path d="M9 -24a23 23 0 0 1 0 48"></path>
+          </g>
+          <circle cx="243" cy="150" r="3.6" fill="#34E0F0"></circle>
+          <text x="34" y="47" font-family="Space Grotesk,system-ui,sans-serif" font-size="22" font-weight="700" letter-spacing="-.7" fill="#EAF0F6" fill-opacity=".92">NFCY</text>
+        </svg>
+        <svg class="tapring" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="var(--line)" stroke-width="3"></circle>
+          <circle cx="32" cy="32" r="28" fill="none" stroke="var(--accent)" stroke-width="3"
+                  stroke-linecap="round" stroke-dasharray="176"
+                  style="stroke-dashoffset:calc(176 - 176 * var(--hold,0))"
+                  transform="rotate(-90 32 32)"></circle>
+        </svg>
+      </button>
+      <p class="tap-help" id="tap-help">Hold the card, do not click it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ THE CARDS ============================ -->
+<section class="sec cards" id="cards">
+  <div class="wrap">
+    <p class="kicker reveal">The range</p>
+    <h2 class="h2 reveal">Choose your card.</h2>
+    <p class="lede reveal">Every one of them opens the same profile. Pick the one you want to hand over.</p>
+
+    <div class="grid-cards">
+
+      <article class="pcard reveal">
+        <div class="pcard-art">
+          <svg viewBox="0 0 340 214" class="card-svg" aria-hidden="true">
+            <defs><linearGradient id="gClassic" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#242A35"></stop><stop offset="1" stop-color="#0D1017"></stop>
+            </linearGradient></defs>
+            <rect x="2" y="2" width="336" height="210" rx="18" fill="url(#gClassic)"></rect>
+            <rect x="2.75" y="2.75" width="334.5" height="208.5" rx="17.5" fill="none" stroke="#33405A" stroke-width="1.5"></rect>
+            <g transform="translate(252,152)" fill="none" stroke="#34E0F0" stroke-opacity=".8" stroke-width="3" stroke-linecap="round">
+              <path d="M0 -13a12 12 0 0 1 0 26"></path><path d="M8 -22a21 21 0 0 1 0 44"></path>
+            </g>
+            <circle cx="245" cy="152" r="3.4" fill="#34E0F0"></circle>
+            <text x="34" y="45" font-family="Space Grotesk,system-ui,sans-serif" font-size="21" font-weight="700" letter-spacing="-.7" fill="#EAF0F6" fill-opacity=".88">NFCY</text>
+            <rect x="34" y="150" width="86" height="6" rx="3" fill="#EAF0F6" fill-opacity=".12"></rect>
+            <rect x="34" y="164" width="56" height="6" rx="3" fill="#EAF0F6" fill-opacity=".08"></rect>
+          </svg>
+          <span class="sheen" aria-hidden="true"></span>
+        </div>
+        <div class="pcard-body">
+          <h3>Classic NFC Card</h3>
+          <p class="price"><span>₹499</span></p>
+          <p class="pcard-line">The everyday card. Full digital profile, QR on the back, share your contact in one tap.</p>
+          <ul class="feats">
+            <li>NFC chip and QR backup</li><li>Full digital profile</li><li>Save contact in one tap</li>
+            <li>WhatsApp, socials, website</li><li>Google Maps directions</li><li>Tap and click analytics</li>
+          </ul>
+          <a class="btn btn-accent full" href="#get" data-card="Classic NFC Card, ₹499">Get my Classic card, ₹499</a>
+          <p class="renew">Renewal ₹299/year after the first year.</p>
+        </div>
+      </article>
+
+      <article class="pcard featured reveal">
+        <span class="badge">Most popular</span>
+        <div class="pcard-art">
+          <svg viewBox="0 0 340 214" class="card-svg" aria-hidden="true">
+            <defs><linearGradient id="gMatte" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#191C22"></stop><stop offset="0.5" stop-color="#0C0E13"></stop><stop offset="1" stop-color="#05070A"></stop>
+            </linearGradient>
+            <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#8A6B33"></stop><stop offset="0.45" stop-color="#EBCE94"></stop>
+              <stop offset="0.62" stop-color="#D9B06A"></stop><stop offset="1" stop-color="#7E6130"></stop>
+            </linearGradient></defs>
+            <rect x="2" y="2" width="336" height="210" rx="18" fill="url(#gMatte)"></rect>
+            <rect x="2.75" y="2.75" width="334.5" height="208.5" rx="17.5" fill="none" stroke="url(#gGold)" stroke-width="1.6"></rect>
+            <g transform="translate(252,152)" fill="none" stroke="url(#gGold)" stroke-width="3" stroke-linecap="round">
+              <path d="M0 -13a12 12 0 0 1 0 26"></path><path d="M8 -22a21 21 0 0 1 0 44"></path>
+            </g>
+            <circle cx="245" cy="152" r="3.4" fill="#D9B06A"></circle>
+            <text x="34" y="45" font-family="Space Grotesk,system-ui,sans-serif" font-size="21" font-weight="700" letter-spacing="-.7" fill="url(#gGold)">NFCY</text>
+            <rect x="34" y="150" width="86" height="6" rx="3" fill="#EAF0F6" fill-opacity=".14"></rect>
+            <rect x="34" y="164" width="56" height="6" rx="3" fill="#EAF0F6" fill-opacity=".09"></rect>
+          </svg>
+          <span class="sheen" aria-hidden="true"></span>
+        </div>
+        <div class="pcard-body">
+          <h3>Black Matte Gold</h3>
+          <p class="price"><span>₹699</span></p>
+          <p class="pcard-line">Matte black with gold detail. The one people turn over in their hand before they hand it back.</p>
+          <ul class="feats">
+            <li>Matte black finish, gold detail</li><li>NFC chip and QR backup</li><li>Products and services on your profile</li>
+            <li>Photo gallery</li><li>WhatsApp, socials, website, maps</li><li>Tap and click analytics</li>
+          </ul>
+          <a class="btn btn-accent full" href="#get" data-card="Black Matte Gold, ₹699">Get Black Matte Gold, ₹699</a>
+          <p class="renew">Renewal ₹299/year after the first year.</p>
+        </div>
+      </article>
+
+      <article class="pcard premium reveal">
+        <span class="badge gold">Premium</span>
+        <div class="pcard-art">
+          <svg viewBox="0 0 340 214" class="card-svg" aria-hidden="true">
+            <defs><linearGradient id="gMetal" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#6E7683"></stop><stop offset="0.28" stop-color="#C3CAD4"></stop>
+              <stop offset="0.44" stop-color="#7C838F"></stop><stop offset="0.62" stop-color="#AEB6C1"></stop>
+              <stop offset="0.8" stop-color="#5F666F"></stop><stop offset="1" stop-color="#8E959F"></stop>
+            </linearGradient></defs>
+            <rect x="2" y="2" width="336" height="210" rx="16" fill="url(#gMetal)"></rect>
+            <rect x="8" y="8" width="324" height="198" rx="12" fill="none" stroke="#05070A" stroke-opacity=".38" stroke-width="1.2"></rect>
+            <rect x="2.75" y="2.75" width="334.5" height="208.5" rx="15.5" fill="none" stroke="#EDF2F7" stroke-opacity=".55" stroke-width="1.5"></rect>
+            <g transform="translate(252,152)" fill="none" stroke="#0B0E14" stroke-opacity=".72" stroke-width="3" stroke-linecap="round">
+              <path d="M0 -13a12 12 0 0 1 0 26"></path><path d="M8 -22a21 21 0 0 1 0 44"></path>
+            </g>
+            <circle cx="245" cy="152" r="3.4" fill="#0B0E14" fill-opacity=".72"></circle>
+            <text x="34" y="45" font-family="Space Grotesk,system-ui,sans-serif" font-size="21" font-weight="700" letter-spacing="-.7" fill="#0B0E14" fill-opacity=".7">NFCY</text>
+            <rect x="34" y="150" width="86" height="6" rx="3" fill="#0B0E14" fill-opacity=".3"></rect>
+            <rect x="34" y="164" width="56" height="6" rx="3" fill="#0B0E14" fill-opacity=".2"></rect>
+          </svg>
+          <span class="sheen" aria-hidden="true"></span>
+        </div>
+        <div class="pcard-body">
+          <h3>Premium Metal</h3>
+          <p class="price"><span>₹2,399</span></p>
+          <p class="pcard-line">Machined metal, real weight. Laser finish, premium profile design, lead capture built in.</p>
+          <ul class="feats">
+            <li>Solid metal build</li><li>Laser finished, NFC and QR</li><li>Premium profile designs</li>
+            <li>Products, services and gallery</li><li>Enquiry form and lead capture</li><li>Full analytics</li>
+          </ul>
+          <a class="btn btn-accent full" href="#get" data-card="Premium Metal, ₹2,399">Get Premium Metal, ₹2,399</a>
+          <p class="renew">Renewal ₹299/year after the first year.</p>
+        </div>
+      </article>
+
+      <article class="pcard reveal">
+        <div class="pcard-art">
+          <svg viewBox="0 0 340 214" class="card-svg" aria-hidden="true">
+            <defs><linearGradient id="gReview" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#222834"></stop><stop offset="1" stop-color="#0B0E14"></stop>
+            </linearGradient></defs>
+            <rect x="2" y="2" width="336" height="210" rx="18" fill="url(#gReview)"></rect>
+            <rect x="2.75" y="2.75" width="334.5" height="208.5" rx="17.5" fill="none" stroke="#33405A" stroke-width="1.5"></rect>
+            <g fill="#D9B06A">
+              <path d="M60 66l6.5 13.2 14.6 2.1-10.5 10.3 2.5 14.5L60 99.3l-13.1 6.8 2.5-14.5-10.5-10.3 14.6-2.1z"></path>
+              <path d="M108 66l6.5 13.2 14.6 2.1-10.5 10.3 2.5 14.5L108 99.3l-13.1 6.8 2.5-14.5-10.5-10.3 14.6-2.1z"></path>
+              <path d="M156 66l6.5 13.2 14.6 2.1-10.5 10.3 2.5 14.5L156 99.3l-13.1 6.8 2.5-14.5-10.5-10.3 14.6-2.1z"></path>
+              <path d="M204 66l6.5 13.2 14.6 2.1-10.5 10.3 2.5 14.5L204 99.3l-13.1 6.8 2.5-14.5-10.5-10.3 14.6-2.1z"></path>
+              <path d="M252 66l6.5 13.2 14.6 2.1-10.5 10.3 2.5 14.5L252 99.3l-13.1 6.8 2.5-14.5-10.5-10.3 14.6-2.1z"></path>
+            </g>
+            <text x="170" y="150" text-anchor="middle" font-family="Space Grotesk,system-ui,sans-serif" font-size="20" font-weight="700" letter-spacing="-.4" fill="#EAF0F6" fill-opacity=".9">Review us on Google</text>
+            <text x="170" y="176" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" letter-spacing="1.6" fill="#34E0F0" fill-opacity=".8">TAP OR SCAN</text>
+          </svg>
+          <span class="sheen" aria-hidden="true"></span>
+        </div>
+        <div class="pcard-body">
+          <h3>Google Review Card</h3>
+          <p class="price"><span>₹699</span></p>
+          <p class="pcard-line">Sits at your counter. Customers tap and land on your Google review page. No searching, no typing.</p>
+          <ul class="feats">
+            <li>Taps straight to your review page</li><li>QR backup for every phone</li><li>Your logo and branding</li>
+            <li>Change the destination any time</li><li>Scan and tap counts</li><li>Built for counters and desks</li>
+          </ul>
+          <a class="btn btn-accent full" href="#get" data-card="Google Review Card, ₹699">Get the Review Card, ₹699</a>
+          <p class="renew">Renewal ₹299/year after the first year.</p>
+        </div>
+      </article>
+
+      <article class="pcard reveal">
+        <div class="pcard-art">
+          <svg viewBox="0 0 340 214" class="card-svg" aria-hidden="true">
+            <defs><linearGradient id="gStandFace" x1="0" y1="0" x2="0.6" y2="1">
+              <stop offset="0" stop-color="#252B37"></stop><stop offset="1" stop-color="#0C0F16"></stop>
+            </linearGradient></defs>
+            <ellipse cx="170" cy="188" rx="96" ry="10" fill="#000" fill-opacity=".45"></ellipse>
+            <path d="M118 44 L232 44 L246 158 L104 158 Z" fill="url(#gStandFace)" stroke="#33405A" stroke-width="1.4"></path>
+            <path d="M104 158 L246 158 L258 176 L92 176 Z" fill="#161B24" stroke="#33405A" stroke-width="1.2"></path>
+            <g transform="translate(175,96)" fill="none" stroke="#34E0F0" stroke-opacity=".85" stroke-width="3.4" stroke-linecap="round">
+              <path d="M0 -15a14 14 0 0 1 0 30"></path><path d="M10 -26a25 25 0 0 1 0 52"></path>
+            </g>
+            <circle cx="167" cy="96" r="3.8" fill="#34E0F0"></circle>
+            <text x="175" y="66" text-anchor="middle" font-family="Space Grotesk,system-ui,sans-serif" font-size="15" font-weight="700" letter-spacing="-.3" fill="#EAF0F6" fill-opacity=".85">Rate us</text>
+            <text x="175" y="140" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" letter-spacing="1.4" fill="#34E0F0" fill-opacity=".75">TAP HERE</text>
+          </svg>
+          <span class="sheen" aria-hidden="true"></span>
+        </div>
+        <div class="pcard-body">
+          <h3>Google Review Stand</h3>
+          <p class="price"><span>₹899</span></p>
+          <p class="pcard-line">The tabletop version. Restaurant tables, reception desks, salon counters.</p>
+          <ul class="feats">
+            <li>Weighted tabletop stand</li><li>NFC and QR on one face</li><li>Your logo and branding</li>
+            <li>Change the destination any time</li><li>Scan and tap counts</li><li>Sits upright, stays put</li>
+          </ul>
+          <a class="btn btn-accent full" href="#get" data-card="Google Review Stand, ₹899">Get the Review Stand, ₹899</a>
+          <p class="renew">Renewal ₹299/year after the first year.</p>
+        </div>
+      </article>
+
+      <article class="pcard reveal">
+        <div class="pcard-art">
+          <svg viewBox="0 0 340 214" class="card-svg" aria-hidden="true">
+            <defs><linearGradient id="gIg" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#F9CE34"></stop><stop offset="0.35" stop-color="#EE2A7B"></stop>
+              <stop offset="0.7" stop-color="#9B36B7"></stop><stop offset="1" stop-color="#4C5FD7"></stop>
+            </linearGradient>
+            <linearGradient id="gIgFace" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#1E2430"></stop><stop offset="1" stop-color="#0A0D13"></stop>
+            </linearGradient></defs>
+            <rect x="2" y="2" width="336" height="210" rx="18" fill="url(#gIgFace)"></rect>
+            <rect x="2.75" y="2.75" width="334.5" height="208.5" rx="17.5" fill="none" stroke="url(#gIg)" stroke-width="2"></rect>
+            <g transform="translate(170,100)">
+              <rect x="-28" y="-28" width="56" height="56" rx="16" fill="none" stroke="url(#gIg)" stroke-width="5"></rect>
+              <circle cx="0" cy="0" r="13" fill="none" stroke="url(#gIg)" stroke-width="5"></circle>
+              <circle cx="17" cy="-17" r="3.4" fill="url(#gIg)"></circle>
+            </g>
+            <text x="170" y="161" text-anchor="middle" font-family="Space Grotesk,system-ui,sans-serif" font-size="18" font-weight="600" letter-spacing="-.3" fill="#EAF0F6" fill-opacity=".82">@yourhandle</text>
+          </svg>
+          <span class="sheen" aria-hidden="true"></span>
+        </div>
+        <div class="pcard-body">
+          <h3>Instagram NFC Card</h3>
+          <p class="price"><span>₹699</span></p>
+          <p class="pcard-line">One tap opens your Instagram. Change which profile it points at whenever you want.</p>
+          <ul class="feats">
+            <li>Taps straight to your Instagram</li><li>QR backup for every phone</li><li>Your handle and branding</li>
+            <li>Repoint it any time</li><li>Tap and scan counts</li><li>Built for creators and shops</li>
+          </ul>
+          <a class="btn btn-accent full" href="#get" data-card="Instagram NFC Card, ₹699">Get the Instagram card, ₹699</a>
+          <p class="renew">Renewal ₹299/year after the first year.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================ COMPARISON ============================ -->
+<section class="sec versus" id="versus">
+  <div class="wrap">
+    <p class="kicker reveal">Paper against NFCY</p>
+    <h2 class="h2 reveal">One of these you reprint. One of these you edit.</h2>
+
+    <div class="vs">
+      <div class="vs-col vs-old reveal">
+        <h3>A paper card</h3>
+        <ul>
+          <li>Printed once, wrong forever.</li>
+          <li>Reprint the whole box to fix one line.</li>
+          <li>Ends up in a drawer.</li>
+          <li>Tells them your number and nothing else.</li>
+          <li>You never know if anyone looked.</li>
+        </ul>
+      </div>
+      <div class="vs-col vs-new reveal">
+        <h3>A NFCY card</h3>
+        <ul>
+          <li>Change it from your phone.</li>
+          <li>One card, forever.</li>
+          <li>They save your contact in one tap.</li>
+          <li>Business, products, location, socials, payment.</li>
+          <li>You see every tap, scan and click.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="vs-cta reveal"><a class="btn btn-accent" href="#cards">Upgrade your identity</a></p>
+  </div>
+</section>
+
+<!-- ============================ THE PROFILE ============================ -->
+<section class="sec profile" id="profile">
+  <div class="wrap">
+    <p class="kicker reveal">Behind the tap</p>
+    <h2 class="h2 reveal">It is not a link page. It is your business.</h2>
+    <p class="lede reveal">A NFCY profile holds everything a customer needs before they decide, and everything you need to know after they leave.</p>
+
+    <div class="grid-prof">
+      <article class="prof reveal">
+        <h3>Who you are</h3>
+        <p>Profile photo, cover, name, designation, company and a short bio. The parts a person reads in the first two seconds.</p>
+      </article>
+      <article class="prof reveal">
+        <h3>Your business</h3>
+        <p>Business name, logo, category, working hours, address and a Google Maps button that opens directions in one tap.</p>
+      </article>
+      <article class="prof reveal">
+        <h3>What you sell</h3>
+        <p>Products with prices and photos, services with duration, a gallery, and a portfolio if the work is the pitch.</p>
+      </article>
+      <article class="prof reveal">
+        <h3>How they reach you</h3>
+        <p>Call, WhatsApp with your message already typed, email, website, every social account, UPI details, and an enquiry form.</p>
+      </article>
+      <article class="prof reveal wide">
+        <h3>What you learn</h3>
+        <p>Profile views, taps, QR scans, and which button people press. Whether they called, messaged on WhatsApp, opened Instagram or asked for directions. Enquiries land in one list you can mark as contacted, converted or closed.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ COUNTERS ============================ -->
+<section class="sec counters" id="counters">
+  <div class="wrap counters-wrap">
+    <div class="counters-copy">
+      <p class="kicker reveal">For shops, salons and restaurants</p>
+      <h2 class="h2 reveal">Some cards never leave the counter.</h2>
+      <p class="lede reveal">A customer who is already happy will leave a review. They just will not go looking for your listing. Put the card in front of them and it takes fifteen seconds.</p>
+      <ul class="tags reveal">
+        <li>Restaurants</li><li>Salons</li><li>Clinics</li><li>Hotels</li>
+        <li>Jewellery</li><li>Retail</li><li>Workshops</li><li>Reception desks</li>
+      </ul>
+      <p class="note reveal">NFCY sends people to your real Google listing. Nothing more. Reviews are theirs to write.</p>
+      <p class="reveal counters-cta"><a class="btn btn-ghost" href="#cards">See the counter products</a></p>
+    </div>
+    <div class="counters-art reveal" aria-hidden="true">
+      <svg viewBox="0 0 360 300">
+        <defs>
+          <linearGradient id="gStandFace2" x1="0" y1="0" x2=".7" y2="1">
+            <stop offset="0" stop-color="#242B37"></stop><stop offset="1" stop-color="#0C0F16"></stop>
+          </linearGradient>
+          <linearGradient id="gDeskTop" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#2A313D" stop-opacity="0"></stop>
+            <stop offset=".18" stop-color="#2A313D"></stop>
+            <stop offset=".82" stop-color="#2A313D"></stop>
+            <stop offset="1" stop-color="#2A313D" stop-opacity="0"></stop>
+          </linearGradient>
+          <linearGradient id="gDeskFront" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#141922"></stop>
+            <stop offset="1" stop-color="#141922" stop-opacity="0"></stop>
+          </linearGradient>
+        </defs>
+
+        <!-- the counter, fading out so it reads as a surface and not a slab -->
+        <rect x="0" y="212" width="360" height="4" fill="url(#gDeskTop)"></rect>
+        <rect x="14" y="216" width="332" height="62" fill="url(#gDeskFront)"></rect>
+        <ellipse cx="180" cy="214" rx="92" ry="8" fill="#000" fill-opacity=".6"></ellipse>
+
+        <!-- the stand: a leaning face on a small base -->
+        <path d="M98 66 L262 66 L272 194 L88 194 Z" fill="url(#gStandFace2)" stroke="#3A4454" stroke-width="1.4"></path>
+        <path d="M98 66 L262 66" stroke="#525F76" stroke-width="1.4"></path>
+        <path d="M88 194 L272 194 L284 212 L76 212 Z" fill="#171C26" stroke="#3A4454" stroke-width="1.2"></path>
+
+        <text x="180" y="100" text-anchor="middle" font-family="Space Grotesk,system-ui,sans-serif" font-size="15" font-weight="700" letter-spacing="-.2" fill="#EAF0F6" fill-opacity=".92">Rate us on Google</text>
+        <g transform="translate(186,144)" fill="none" stroke="#34E0F0" stroke-width="3.4" stroke-linecap="round">
+          <path d="M0 -15a14 14 0 0 1 0 30"></path><path d="M10 -26a25 25 0 0 1 0 52"></path>
+        </g>
+        <circle cx="177" cy="144" r="4" fill="#34E0F0"></circle>
+        <text x="180" y="180" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.9" fill="#34E0F0" fill-opacity=".8">TAP OR SCAN</text>
+
+        <!-- a phone coming in from the side -->
+        <g transform="translate(292,112) rotate(11)">
+          <rect x="0" y="0" width="48" height="92" rx="10" fill="#12161E" stroke="#3A4454" stroke-width="1.2"></rect>
+          <rect x="5" y="6" width="38" height="80" rx="7" fill="#06080C"></rect>
+          <g fill="#D9B06A" transform="translate(24,32) scale(.52)">
+            <path d="M0 -14l4.2 8.6 9.5 1.4-6.9 6.7 1.6 9.4L0 11.6l-8.4 4.5 1.6-9.4-6.9-6.7 9.5-1.4z"></path>
+          </g>
+          <rect x="12" y="50" width="24" height="4" rx="2" fill="#EAF0F6" fill-opacity=".22"></rect>
+          <rect x="15" y="60" width="18" height="4" rx="2" fill="#EAF0F6" fill-opacity=".14"></rect>
+        </g>
+        <g class="counters-wave" stroke="#34E0F0" fill="none" stroke-width="2" stroke-linecap="round">
+          <path d="M262 132a28 28 0 0 1 0 38" opacity=".55"></path>
+          <path d="M274 120a44 44 0 0 1 0 62" opacity=".3"></path>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TEAMS ============================ -->
+<section class="sec teams" id="teams">
+  <div class="wrap teams-wrap">
+   <div class="teams-copy">
+    <p class="kicker reveal">Corporate and bulk</p>
+    <h2 class="h2 reveal">Fifty people, one identity.</h2>
+    <p class="lede reveal">Order in bulk, brand every card, and manage every employee profile from one place. New joiner gets a card and a profile the same week. Someone leaves and you switch their card off.</p>
+    <ul class="vols reveal">
+      <li><span>10</span>cards</li><li><span>50</span>cards</li><li><span>100</span>cards</li>
+      <li><span>500</span>cards</li><li><span>1000+</span>cards</li>
+    </ul>
+    <div class="team-points">
+      <p class="reveal"><strong>One dashboard.</strong> Every employee profile, every card, in one place.</p>
+      <p class="reveal"><strong>Your branding.</strong> Company logo and colours on every card and every profile.</p>
+      <p class="reveal"><strong>One invoice.</strong> Consolidated billing, GST details on file.</p>
+    </div>
+    <p class="reveal"><a class="btn btn-accent" href="#get" data-card="Bulk order enquiry">Talk about a bulk order</a></p>
+   </div>
+
+   <div class="teams-art reveal" aria-hidden="true">
+     <svg viewBox="0 0 300 340">
+       <defs><linearGradient id="gNode" x1="0" y1="0" x2="1" y2="1">
+         <stop offset="0" stop-color="#1B212B"></stop><stop offset="1" stop-color="#0B0E14"></stop>
+       </linearGradient></defs>
+
+       <g stroke="#34E0F0" stroke-opacity=".3" stroke-width="1.2" fill="none">
+         <path d="M150 62 V92 M74 122 V92 H226 V122"></path>
+         <path d="M74 158 V186 H40 V212 M74 186 H108 V212"></path>
+         <path d="M226 158 V186 H192 V212 M226 186 H260 V212"></path>
+       </g>
+
+       <g class="tnode">
+         <rect x="96" y="28" width="108" height="36" rx="9" fill="url(#gNode)" stroke="#34E0F0" stroke-opacity=".45"></rect>
+         <text x="150" y="51" text-anchor="middle" font-family="Space Grotesk,system-ui,sans-serif" font-size="14" font-weight="600" fill="#EAF0F6">Company</text>
+       </g>
+
+       <g>
+         <rect x="22" y="122" width="104" height="36" rx="9" fill="url(#gNode)" stroke="#33405A"></rect>
+         <text x="74" y="145" text-anchor="middle" font-family="Manrope,sans-serif" font-size="12.5" fill="#96A2B4">Sales</text>
+         <rect x="174" y="122" width="104" height="36" rx="9" fill="url(#gNode)" stroke="#33405A"></rect>
+         <text x="226" y="145" text-anchor="middle" font-family="Manrope,sans-serif" font-size="12.5" fill="#96A2B4">Operations</text>
+       </g>
+
+       <g>
+         <rect x="10" y="212" width="60" height="40" rx="7" fill="url(#gNode)" stroke="#33405A"></rect>
+         <rect x="78" y="212" width="60" height="40" rx="7" fill="url(#gNode)" stroke="#33405A"></rect>
+         <rect x="162" y="212" width="60" height="40" rx="7" fill="url(#gNode)" stroke="#33405A"></rect>
+         <rect x="230" y="212" width="60" height="40" rx="7" fill="url(#gNode)" stroke="#33405A"></rect>
+         <g fill="none" stroke="#34E0F0" stroke-opacity=".7" stroke-width="1.8" stroke-linecap="round">
+           <path d="M52 226a7 7 0 0 1 0 12"></path><path d="M120 226a7 7 0 0 1 0 12"></path>
+           <path d="M204 226a7 7 0 0 1 0 12"></path><path d="M272 226a7 7 0 0 1 0 12"></path>
+         </g>
+         <g fill="#EAF0F6" fill-opacity=".2">
+           <rect x="20" y="224" width="24" height="4" rx="2"></rect><rect x="20" y="234" width="16" height="4" rx="2"></rect>
+           <rect x="88" y="224" width="24" height="4" rx="2"></rect><rect x="88" y="234" width="16" height="4" rx="2"></rect>
+           <rect x="172" y="224" width="24" height="4" rx="2"></rect><rect x="172" y="234" width="16" height="4" rx="2"></rect>
+           <rect x="240" y="224" width="24" height="4" rx="2"></rect><rect x="240" y="234" width="16" height="4" rx="2"></rect>
+         </g>
+       </g>
+
+       <text x="150" y="292" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" letter-spacing="1.8" fill="#96A2B4">COMPANY / TEAMS / CARDS</text>
+       <text x="150" y="314" text-anchor="middle" font-family="Manrope,sans-serif" font-size="12" fill="#96A2B4">Every card switched on and off from one place.</text>
+     </svg>
+   </div>
+  </div>
+</section>
+
+<!-- ============================ RENEWAL ============================ -->
+<section class="sec renewal" id="renewal">
+  <div class="wrap renewal-wrap">
+    <div class="renewal-badge reveal" aria-hidden="true">
+      <span class="rb-num">₹299</span><span class="rb-unit">per year</span>
+    </div>
+    <div class="renewal-copy">
+      <p class="kicker reveal">Pricing, with nothing hidden</p>
+      <h2 class="h2 reveal">About the ₹299.</h2>
+      <p class="reveal">Your card is yours. You buy it once. The ₹299 a year keeps your profile online: the hosting, the short link on your card, the QR, the analytics, and the right to change any of it whenever you want.</p>
+      <p class="reveal">If you stop paying, the card is not bricked. The profile pauses until you renew. We will remind you before it happens, four times, and you will never find out by having your card fail in front of someone.</p>
+      <p class="reveal strong">You will always see your plan, your activation date, your renewal date and the days left.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FAQ ============================ -->
+<section class="sec faq" id="faq">
+  <div class="wrap">
+    <p class="kicker reveal">Straight answers</p>
+    <h2 class="h2 reveal">Questions people actually ask.</h2>
+    <div class="faq-list">
+      <details class="reveal"><summary>Do they need an app?</summary><p>No. Their phone opens your profile in its browser, the same way it opens a website. Nothing to install.</p></details>
+      <details class="reveal"><summary>Does it work on iPhone?</summary><p>Yes. Every iPhone from the XS onward reads a NFCY card without an app. Older iPhones use the QR on the back.</p></details>
+      <details class="reveal"><summary>Does it work on Android?</summary><p>Yes, on any Android with NFC, which is most of them. QR covers the rest.</p></details>
+      <details class="reveal"><summary>Honestly, is this just a link? Could I not do this for free?</summary><p>You could. The link is the easy part. What you are buying is the thing that link opens, the ability to change it forever, the analytics behind it, and an object worth handing to someone. If you only want a free link page, take one. We built this for people who want the object too.</p></details>
+      <details class="reveal"><summary>What if I change my phone number?</summary><p>Change it on your profile. Every card you ever gave out points at the new number instantly. Nothing gets reprinted.</p></details>
+      <details class="reveal"><summary>What if I lose my card?</summary><p>Switch it off from your dashboard and order a replacement. Your profile and your link stay exactly the same.</p></details>
+      <details class="reveal"><summary>Can I change where my Instagram card points?</summary><p>Yes, any time, from the dashboard. The card never changes.</p></details>
+      <details class="reveal"><summary>What if NFC does not work on their phone?</summary><p>Every card has a QR code printed on the back. It goes to the same place.</p></details>
+      <details class="reveal"><summary>How long does delivery take?</summary><p>We tell you the real date at checkout and you track it from your dashboard. We would rather quote a date we can hit.</p></details>
+      <details class="reveal"><summary>Can a company order fifty?</summary><p>Yes. Bulk pricing, your branding, and one dashboard for every employee profile.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ THE ONE CTA ============================ -->
+<section class="sec get" id="get">
+  <div class="wrap get-wrap">
+    <div class="get-copy">
+      <h2 class="h2 reveal">Get your card.</h2>
+      <p class="lede reveal">Tell us what you do and which card you want. We reply on WhatsApp.</p>
+      <p class="get-alt reveal">Would rather just message? <a href="https://wa.me/918141337021" target="_blank" rel="noopener">Open WhatsApp now</a>.</p>
+
+      <ol class="next reveal">
+        <li><span>01</span><p><strong>We reply on WhatsApp.</strong> Usually the same day, in the language you wrote in.</p></li>
+        <li><span>02</span><p><strong>You confirm the card.</strong> We send the payment link and the delivery date.</p></li>
+        <li><span>03</span><p><strong>You build your profile.</strong> It goes live while the card is still being printed.</p></li>
+      </ol>
+    </div>
+
+    <form class="get-form reveal" id="get-form" novalidate>
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Rahul Sharma" required>
+        <p class="err" id="e-name" hidden>Please tell us your name.</p>
+      </div>
+      <div class="field">
+        <label for="f-phone">WhatsApp number</label>
+        <input id="f-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="98765 43210" required>
+        <p class="err" id="e-phone" hidden>Please enter a 10 digit mobile number.</p>
+      </div>
+      <div class="field">
+        <label for="f-work">What you do</label>
+        <input id="f-work" name="work" type="text" placeholder="Interior designer in Ahmedabad">
+      </div>
+      <div class="field">
+        <label for="f-card">Which card</label>
+        <select id="f-card" name="card">
+          <option>Classic NFC Card, ₹499</option>
+          <option selected>Black Matte Gold, ₹699</option>
+          <option>Premium Metal, ₹2,399</option>
+          <option>Google Review Card, ₹699</option>
+          <option>Google Review Stand, ₹899</option>
+          <option>Instagram NFC Card, ₹699</option>
+          <option>Bulk order enquiry</option>
+          <option>Not sure yet</option>
+        </select>
+      </div>
+      <button class="btn btn-accent full" type="submit">Send on WhatsApp</button>
+      <p class="form-note">This opens WhatsApp with your message already written. Nothing is stored on this page.</p>
+      <p class="form-ok" id="form-ok" role="status" hidden>Opening WhatsApp. If it did not open, message us on 8141337021.</p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <a class="brand" href="#top" aria-label="NFCY home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M13 10a8 8 0 0 1 0 12"></path><path d="M18 7a13 13 0 0 1 0 18"></path>
+          </g>
+          <circle cx="9.5" cy="16" r="2.2" fill="currentColor"></circle>
+        </svg>
+        <span class="brand-word">NFCY</span>
+      </a>
+      <p>Your digital identity. One tap away.</p>
+    </div>
+    <div class="foot-cols">
+      <div>
+        <h4>Cards</h4>
+        <a href="#cards">Classic, ₹499</a><a href="#cards">Black Matte Gold, ₹699</a>
+        <a href="#cards">Premium Metal, ₹2,399</a><a href="#cards">Google Review Card, ₹699</a>
+        <a href="#cards">Google Review Stand, ₹899</a><a href="#cards">Instagram Card, ₹699</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#how">How it works</a><a href="#profile">The profile</a>
+        <a href="#teams">For teams</a><a href="#renewal">Renewal</a><a href="#faq">FAQ</a>
+      </div>
+      <div>
+        <h4>Talk to us</h4>
+        <a href="https://wa.me/918141337021" target="_blank" rel="noopener">WhatsApp 8141337021</a>
+        <a href="tel:+918141337021">Call 8141337021</a>
+        <a href="#get">Send an enquiry</a>
+      </div>
+      <div>
+        <h4>Policies</h4>
+        <a href="#faq">Privacy policy</a><a href="#faq">Terms and conditions</a>
+        <a href="#faq">Refund policy</a><a href="#faq">Shipping policy</a>
+        <a href="#faq">Cancellation policy</a><a href="#faq">Cookie policy</a>
+      </div>
+    </div>
+  </div>
+  <div class="wrap foot-base">
+    <p>NFCY is a new brand. The card visuals on this page are renders, and they will be replaced with photographs of the real product.</p>
+    <p class="mono">© <span id="yr">2026</span> NFCY</p>
+  </div>
+</footer>
+
+<!-- mobile sticky call to action -->
+<div class="sticky-bar" id="sticky-bar">
+  <a class="btn btn-ghost sb" href="https://wa.me/918141337021" target="_blank" rel="noopener">WhatsApp</a>
+  <a class="btn btn-accent sb" href="#get">Get your card</a>
+</div>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

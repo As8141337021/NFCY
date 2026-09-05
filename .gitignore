@@ -1,0 +1,31 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Secrets. .env holds the database password, the session signing key and the
+# Razorpay keys. It must never be committed; .env.example is the one to share.
+.env
+.env.*
+!.env.example
+
+# The local Postgres cluster the dev database runs in
+.pgdata/
+*.log
+
+# Working files, not part of the product
+review/
+_skill_extract/
+*.zip
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Vercel
+.vercel/

@@ -1,0 +1,1000 @@
+// NFCY platform schema.
+// One Postgres database behind the marketing site, the customer dashboard,
+// the public profiles, the NFC redirects and the admin panel.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// PEOPLE AND ACCESS
+// ============================================================
+
+enum Role {
+  CUSTOMER
+  SALES
+  MANUFACTURING
+  SUPPORT
+  OPERATIONS
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+model User {
+  id            String     @id @default(uuid())
+  email         String     @unique
+  emailVerified DateTime?
+  phone         String?    @unique
+  phoneVerified DateTime?
+  passwordHash  String?
+  name          String
+  role          Role       @default(CUSTOMER)
+  status        UserStatus @default(ACTIVE)
+
+  // google sign in, when it is switched on
+  googleId String? @unique
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  lastLogin DateTime?
+
+  profiles      Profile[]
+  sessions      Session[]
+  tokens        VerificationToken[]
+  orders        Order[]
+  cards         NfcCard[]
+  subscriptions Subscription[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  otpCodes      OtpCode[]
+
+  @@index([role, status])
+  @@index([createdAt])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent String?
+  ip        String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+enum TokenPurpose {
+  EMAIL_VERIFY
+  PASSWORD_RESET
+}
+
+model VerificationToken {
+  id        String       @id @default(uuid())
+  tokenHash String       @unique
+  purpose   TokenPurpose
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime     @default(now())
+
+  @@index([userId, purpose])
+}
+
+model OtpCode {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone     String
+  codeHash  String
+  attempts  Int       @default(0)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([phone])
+}
+
+// ============================================================
+// CORPORATE
+// ============================================================
+
+model Organization {
+  id         String      @id @default(uuid())
+  name       String
+  slug       String      @unique
+  gstNumber  String?
+  logoId     String?
+  logo       MediaAsset? @relation(fields: [logoId], references: [id], onDelete: SetNull)
+  brandColor String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  users       User[]
+  departments Department[]
+  profiles    Profile[]
+  orders      Order[]
+}
+
+model Department {
+  id             String       @id @default(uuid())
+  name           String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  profiles       Profile[]
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, name])
+}
+
+// ============================================================
+// THE DIGITAL PROFILE
+// ============================================================
+
+enum ProfileStatus {
+  DRAFT
+  PUBLISHED
+  SUSPENDED
+  RENEWAL_REQUIRED
+}
+
+model Profile {
+  id       String @id @default(uuid())
+  username String @unique
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  departmentId   String?
+  department     Department?   @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+
+  status   ProfileStatus @default(DRAFT)
+  template String        @default("corporate")
+  isPublic Boolean       @default(true)
+  verified Boolean       @default(false)
+
+  // person
+  fullName    String
+  designation String?
+  company     String?
+  bio         String?
+  // stored as a date, never a moment in time, so it cannot drift a day across
+  // timezones. Off the public page by default: it is personal data.
+  dateOfBirth DateTime? @db.Date
+  showBirthday Boolean  @default(false)
+
+  photoId String?
+  photo   MediaAsset? @relation("ProfilePhoto", fields: [photoId], references: [id], onDelete: SetNull)
+  coverId String?
+  cover   MediaAsset? @relation("ProfileCover", fields: [coverId], references: [id], onDelete: SetNull)
+
+  // contact
+  phone        String?
+  email        String?
+  whatsapp     String?
+  whatsappNote String?
+  website      String?
+  address      String?
+  mapsUrl      String?
+  upiId        String?
+  paymentNote  String?
+
+  // lead capture
+  leadFormEnabled Boolean @default(true)
+  leadFormTitle   String  @default("Send me a message")
+
+  // seo
+  metaTitle       String?
+  metaDescription String?
+
+  accentColor String @default("#34E0F0")
+
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  businesses   Business[]
+  affiliations Affiliation[]
+  socialLinks  SocialLink[]
+  products     ProfileProduct[]
+  services     ProfileService[]
+  gallery      GalleryItem[]
+  documents    ProfileDocument[]
+  reviewRequests ReviewRequest[]
+  cards        NfcCard[]
+  leads        Lead[]
+  events       AnalyticsEvent[]
+
+  @@index([status, isPublic])
+  @@index([userId])
+  @@index([organizationId])
+}
+
+model Business {
+  id        String  @id @default(uuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  // A person can run more than one thing. The first is the primary, and the
+  // rest appear under it in the order they are arranged.
+  position  Int     @default(0)
+  isPrimary Boolean @default(false)
+  active    Boolean @default(true)
+
+  name      String
+  category  String?
+  about     String?
+  phone     String?
+  whatsapp  String?
+  email     String?
+  website   String?
+  address   String?
+  mapsUrl   String?
+  gstNumber String?
+
+  logoId String?
+  logo   MediaAsset? @relation(fields: [logoId], references: [id], onDelete: SetNull)
+
+  // [{ day: "mon", open: "09:00", close: "18:00", closed: false }, ...]
+  hours     Json?
+  // Opening hours are off by default. A consultant has none worth showing; a
+  // salon lives by them. The customer decides per business.
+  showHours Boolean @default(false)
+
+  googleReviewUrl String?
+  instagramUrl    String?
+
+  reviewRequests ReviewRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId, position])
+}
+
+/**
+ * Networking bodies a person belongs to: BNI, Rotary, JCI, a chamber of
+ * commerce, a trade association. In Indian business networking these badges do
+ * real work, so they get their own logos rather than being squeezed into the
+ * social links.
+ */
+model Affiliation {
+  id        String  @id @default(uuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  name    String
+  role    String?
+  url     String?
+  chapter String?
+
+  logoId String?
+  logo   MediaAsset? @relation(fields: [logoId], references: [id], onDelete: SetNull)
+
+  position Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId, position])
+}
+
+model SocialLink {
+  id        String  @id @default(uuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  platform String // instagram | facebook | linkedin | youtube | x | snapchat | telegram | pinterest | threads | website | custom
+  label    String?
+  url      String
+  position Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([profileId, position])
+}
+
+model ProfileProduct {
+  id        String  @id @default(uuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  priceMinor  Int? // paise
+  currency    String      @default("INR")
+  url         String?
+  buttonLabel String      @default("Buy now")
+  imageId     String?
+  image       MediaAsset? @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  position    Int         @default(0)
+  active      Boolean     @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId, position])
+}
+
+model ProfileService {
+  id        String  @id @default(uuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  priceMinor  Int?
+  currency    String      @default("INR")
+  durationMin Int?
+  bookingUrl  String?
+  buttonLabel String      @default("Book now")
+  imageId     String?
+  image       MediaAsset? @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  position    Int         @default(0)
+  active      Boolean     @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId, position])
+}
+
+model GalleryItem {
+  id        String  @id @default(uuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  kind     String      @default("image") // image | video
+  caption  String?
+  mediaId  String?
+  media    MediaAsset? @relation(fields: [mediaId], references: [id], onDelete: SetNull)
+  videoUrl String?
+  position Int         @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([profileId, position])
+}
+
+// ============================================================
+// MEDIA
+// ============================================================
+
+/// A file a business hands out: a catalogue, a price list, a brochure.
+model ProfileDocument {
+  id        String  @id @default(uuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+
+  fileId String
+  file   MediaAsset @relation("ProfileDocuments", fields: [fileId], references: [id], onDelete: Cascade)
+
+  /// how many times a visitor has actually opened it
+  downloads Int     @default(0)
+  position  Int     @default(0)
+  active    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId, position])
+}
+
+/// Asking a real customer to leave a real review.
+///
+/// The platform never writes a review and never sees one. All it does is take
+/// a customer who has actually bought something to the business's own Google
+/// review page, and record that the ask happened. Whether they then wrote
+/// anything is between them and Google.
+model ReviewRequest {
+  id        String  @id @default(uuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  businessId String?
+  business   Business? @relation(fields: [businessId], references: [id], onDelete: SetNull)
+
+  customerName String
+  phone        String?
+
+  /// what goes in the link, so an open can be attributed to one ask
+  token String @unique
+
+  /// how it was sent: whatsapp, sms, copied
+  channel String @default("whatsapp")
+
+  sentAt    DateTime  @default(now())
+  openedAt  DateTime?
+  openCount Int       @default(0)
+
+  @@index([profileId, sentAt])
+}
+
+model MediaAsset {
+  id       String  @id @default(uuid())
+  ownerId  String?
+  mimeType String
+  bytes    Int
+  width    Int?
+  height   Int?
+  checksum String?
+
+  // storage driver "db" keeps the bytes here; driver "s3" fills externalUrl instead
+  driver      String  @default("db")
+  data        Bytes?
+  externalUrl String?
+
+  createdAt DateTime @default(now())
+
+  profilePhotos    Profile[]        @relation("ProfilePhoto")
+  profileCovers    Profile[]        @relation("ProfileCover")
+  businessLogos    Business[]
+  affiliationLogos Affiliation[]
+  orgLogos         Organization[]
+  profileProducts  ProfileProduct[]
+  profileServices  ProfileService[]
+  galleryItems     GalleryItem[]
+  documents        ProfileDocument[] @relation("ProfileDocuments")
+  productImages    ProductImage[]
+
+  @@index([ownerId])
+}
+
+// ============================================================
+// THE STORE
+// ============================================================
+
+enum ProductStatus {
+  ACTIVE
+  DRAFT
+  OUT_OF_STOCK
+  HIDDEN
+  ARCHIVED
+}
+
+enum ProductKind {
+  CARD
+  STAND
+  RENEWAL
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  slug        String        @unique
+  sku         String        @unique
+  name        String
+  kind        ProductKind   @default(CARD)
+  tagline     String?
+  description String?
+  status      ProductStatus @default(ACTIVE)
+
+  priceMinor Int // paise, the price actually charged
+  mrpMinor   Int? // struck through price, when there is one
+  taxPercent Int  @default(18)
+
+  stock      Int     @default(0)
+  trackStock Boolean @default(false)
+  badge      String? // "Most popular" | "Premium"
+  position   Int     @default(0)
+
+  // what the NFC on this product points at by default
+  destinationType CardDestinationType @default(PROFILE)
+
+  features Json? // string[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  images     ProductImage[]
+  orderItems OrderItem[]
+  cards      NfcCard[]
+  coupons    Coupon[]       @relation("CouponProducts")
+
+  @@index([status, position])
+}
+
+model ProductImage {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  mediaId String
+  media   MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  alt       String?
+  position  Int     @default(0)
+  isPrimary Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([productId, position])
+}
+
+// ============================================================
+// NFC
+// ============================================================
+
+enum CardStatus {
+  UNASSIGNED
+  ASSIGNED
+  ACTIVE
+  SUSPENDED
+  LOST
+  REPLACED
+}
+
+enum CardDestinationType {
+  PROFILE
+  GOOGLE_REVIEW
+  INSTAGRAM
+  CUSTOM_URL
+}
+
+model NfcCard {
+  id String @id @default(uuid())
+
+  // what the chip actually stores: nfcy.in/t/<code>
+  code           String @unique
+  // printed on the card so a human can read it during activation
+  serial         String @unique
+  // hashed activation secret, checked once when the customer activates
+  activationHash String
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  profileId String?
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull)
+
+  // not unique: one order line for three cards mints three cards
+  orderItemId String?
+  orderItem   OrderItem? @relation(fields: [orderItemId], references: [id], onDelete: SetNull)
+
+  destinationType CardDestinationType @default(PROFILE)
+  destinationUrl  String?
+
+  status      CardStatus @default(UNASSIGNED)
+  assignedAt  DateTime?
+  activatedAt DateTime?
+  lastTapAt   DateTime?
+  tapCount    Int        @default(0)
+
+  batch String?
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events AnalyticsEvent[]
+
+  @@index([status])
+  @@index([userId])
+  @@index([profileId])
+  @@index([batch])
+  @@index([orderItemId])
+}
+
+// ============================================================
+// ORDERS AND MONEY
+// ============================================================
+
+enum OrderStatus {
+  PAYMENT_PENDING
+  PAYMENT_RECEIVED
+  PROFILE_PENDING
+  PROFILE_COMPLETED
+  DESIGN_PROCESSING
+  MANUFACTURING
+  DISPATCHED
+  DELIVERED
+  ACTIVATED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESSFUL
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+model Order {
+  id          String @id @default(uuid())
+  orderNumber String @unique // CT-2026-000123
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  status OrderStatus @default(PAYMENT_PENDING)
+
+  // customer details, frozen at checkout
+  customerName  String
+  customerEmail String
+  customerPhone String
+  companyName   String?
+  gstNumber     String?
+
+  billingAddress  Json
+  shippingAddress Json
+
+  // every amount in paise, computed on the server, never trusted from the client
+  subtotalMinor Int
+  discountMinor Int @default(0)
+  shippingMinor Int @default(0)
+  taxMinor      Int @default(0)
+  totalMinor    Int
+
+  couponId   String?
+  coupon     Coupon? @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  couponCode String?
+
+  notes String?
+
+  // one order per idempotency key, so a double click cannot create two orders
+  idempotencyKey String? @unique
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  paidAt    DateTime?
+
+  items         OrderItem[]
+  payments      Payment[]
+  shipment      Shipment?
+  invoice       Invoice?
+  subscriptions Subscription[]
+  statusEvents  OrderStatusEvent[]
+
+  @@index([userId])
+  @@index([status, createdAt])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id      String @id @default(uuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  // frozen at purchase time so later price edits never rewrite history
+  productName String
+  productSku  String
+  unitMinor   Int
+  quantity    Int
+  totalMinor  Int
+
+  customization Json? // { name, designation, logoMediaId, colour, finish, customText }
+
+  cards NfcCard[]
+
+  @@index([orderId])
+}
+
+model OrderStatusEvent {
+  id        String      @id @default(uuid())
+  orderId   String
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus
+  note      String?
+  actorId   String?
+  createdAt DateTime    @default(now())
+
+  @@index([orderId, createdAt])
+}
+
+model Payment {
+  id      String @id @default(uuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  gateway String @default("razorpay")
+
+  gatewayOrderId   String? @unique
+  gatewayPaymentId String? @unique
+  gatewaySignature String?
+
+  amountMinor   Int
+  refundedMinor Int           @default(0)
+  currency      String        @default("INR")
+  status        PaymentStatus @default(PENDING)
+  method        String?
+  failureReason String?
+
+  // every webhook we have already applied, so a replay changes nothing
+  webhookEventIds String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([status])
+}
+
+model WebhookEvent {
+  id          String   @id @default(uuid())
+  gateway     String   @default("razorpay")
+  eventId     String
+  eventType   String
+  payload     Json
+  processedAt DateTime @default(now())
+
+  @@unique([gateway, eventId])
+  @@index([eventType])
+}
+
+model Invoice {
+  id            String   @id @default(uuid())
+  invoiceNumber String   @unique
+  orderId       String   @unique
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  issuedAt      DateTime @default(now())
+  totalMinor    Int
+  taxMinor      Int
+  gstNumber     String?
+}
+
+enum ShipmentStatus {
+  PENDING
+  DISPATCHED
+  IN_TRANSIT
+  DELIVERED
+  RETURNED
+}
+
+model Shipment {
+  id      String @id @default(uuid())
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  courier     String?
+  awb         String?
+  trackingUrl String?
+  status      ShipmentStatus @default(PENDING)
+
+  dispatchedAt      DateTime?
+  estimatedDelivery DateTime?
+  deliveredAt       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum CouponType {
+  PERCENT
+  FIXED
+}
+
+model Coupon {
+  id   String     @id @default(uuid())
+  code String     @unique
+  type CouponType
+
+  value            Int // percent, or paise when FIXED
+  minOrderMinor    Int  @default(0)
+  maxDiscountMinor Int?
+
+  firstOrderOnly Boolean @default(false)
+  minQuantity    Int     @default(1)
+
+  usageLimit   Int?
+  usageCount   Int  @default(0)
+  perUserLimit Int? @default(1)
+
+  startsAt  DateTime?
+  expiresAt DateTime?
+  active    Boolean   @default(true)
+
+  products Product[] @relation("CouponProducts")
+  orders   Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================
+// RENEWALS
+// ============================================================
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRING
+  EXPIRED
+  CANCELLED
+}
+
+model Subscription {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  orderId String?
+  order   Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  planName    String             @default("NFCY profile")
+  priceMinor  Int
+  status      SubscriptionStatus @default(ACTIVE)
+  activatedAt DateTime           @default(now())
+  expiresAt   DateTime
+
+  remindersSent Int[] @default([]) // which of 30 / 15 / 7 / 1 day reminders went out
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, expiresAt])
+  @@index([userId])
+}
+
+// ============================================================
+// LEADS
+// ============================================================
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  CONVERTED
+  CLOSED
+}
+
+model Lead {
+  id        String  @id @default(uuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  name    String
+  phone   String?
+  email   String?
+  message String?
+
+  status LeadStatus @default(NEW)
+  note   String?
+
+  sourceUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId, status])
+  @@index([createdAt])
+}
+
+// ============================================================
+// ANALYTICS
+// ============================================================
+
+enum EventType {
+  PROFILE_VIEW
+  NFC_TAP
+  QR_SCAN
+  CLICK_WHATSAPP
+  CLICK_CALL
+  CLICK_EMAIL
+  CLICK_WEBSITE
+  CLICK_SOCIAL
+  CLICK_MAPS
+  CLICK_PRODUCT
+  CLICK_SERVICE
+  CLICK_UPI
+  SAVE_CONTACT
+  LEAD_SUBMITTED
+  REVIEW_REDIRECT
+  DOCUMENT_OPENED
+  REVIEW_REQUEST_SENT
+}
+
+model AnalyticsEvent {
+  id String @id @default(uuid())
+
+  profileId String?
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  cardId String?
+  card   NfcCard? @relation(fields: [cardId], references: [id], onDelete: SetNull)
+
+  type  EventType
+  label String? // which social platform, which product, and so on
+
+  // deliberately coarse: no raw IP is ever stored
+  deviceType String?
+  browser    String?
+  os         String?
+  country    String?
+  referrer   String?
+  source     String? // nfc | qr | direct | link
+
+  // salted daily hash, so repeat views can be counted without identifying anyone
+  visitorHash String?
+
+  createdAt DateTime @default(now())
+
+  @@index([profileId, type, createdAt])
+  @@index([createdAt])
+  @@index([cardId])
+}
+
+// ============================================================
+// PLATFORM
+// ============================================================
+
+model Notification {
+  id     String  @id @default(uuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  channel   String // email | whatsapp | sms | inapp
+  template  String
+  toAddress String
+  subject   String?
+  body      String
+
+  status    String    @default("queued") // queued | sent | failed
+  error     String?
+  sentAt    DateTime?
+  dedupeKey String?   @unique
+
+  createdAt DateTime @default(now())
+
+  @@index([status, createdAt])
+  @@index([userId])
+}
+
+model AuditLog {
+  id     String  @id @default(uuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  action     String // order.status_changed, card.assigned, product.updated ...
+  entityType String
+  entityId   String?
+  before     Json?
+  after      Json?
+  ip         String?
+
+  createdAt DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model RateLimit {
+  id        String   @id
+  count     Int      @default(0)
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}
