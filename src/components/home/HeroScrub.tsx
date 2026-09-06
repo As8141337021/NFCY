@@ -21,13 +21,19 @@ const VIDEO_URL = '/hero-scrub.mp4';
 const POSTER_URL = '/hero-poster.jpg';
 const CROSS = 0.64;
 
-const GATES = [
-  '(max-width: 720px)',
-  '(orientation: portrait) and (max-width: 1024px)',
-  '(orientation: portrait) and (pointer: coarse)',
-  '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
-  '(prefers-reduced-motion: reduce)',
-];
+/**
+ * Who gets the still hero instead of the scrubbed one.
+ *
+ * Only one gate now. Phones used to be on this list, but the animation is the
+ * thing the product is selling and most people meet the site on a phone, so
+ * they were the ones missing it. The stage is sized in svh, so the hiding of
+ * the browser's own chrome does not move it.
+ *
+ * Reduced motion stays, and is not negotiable: somebody who has asked their
+ * operating system to stop animations has usually done it because animation
+ * makes them ill.
+ */
+const GATES = ['(prefers-reduced-motion: reduce)'];
 
 const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : v);
 const smoothstep = (p: number, e0: number, e1: number) => {

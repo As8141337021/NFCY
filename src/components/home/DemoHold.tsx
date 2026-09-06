@@ -20,11 +20,6 @@ export default function DemoHold() {
     const card = cardRef.current;
     if (!stage || !card) return;
 
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      complete();
-      return;
-    }
-
     let hold = 0;
     let holding = false;
     let raf: number | null = null;
@@ -60,6 +55,18 @@ export default function DemoHold() {
         raf = null;
         last = 0;
       }
+    }
+
+    // Somebody who has asked their system to stop animations gets the finished
+    // state straight away, with nothing to hold.
+    //
+    // This used to sit at the top of the effect, where it called complete()
+    // before `finished` had been declared. Function declarations are hoisted
+    // but `let` is not, so it threw on the first line of complete() and took
+    // the whole page down for every visitor with reduced motion switched on.
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      complete();
+      return;
     }
 
     const start = (e: Event) => {

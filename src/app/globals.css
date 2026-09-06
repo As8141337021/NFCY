@@ -147,7 +147,7 @@ a{color:inherit}
 /* ============================================================
    HERO
    ============================================================ */
-.hero{position:relative;height:620vh;z-index:1}
+.hero{position:relative;height:620svh;z-index:1}
 .stage{
   position:sticky;top:0;height:100vh;height:100svh;
   overflow:hidden;background:var(--canvas);
@@ -326,11 +326,8 @@ a{color:inherit}
 /* ---------- the composed static hero ---------- */
 .static-hero{display:none}
 
-/* the five gates, character for character identical to the JS list */
-@media (max-width: 720px),
-       (orientation: portrait) and (max-width: 1024px),
-       (orientation: landscape) and (pointer: coarse) and (max-height: 560px),
-       (prefers-reduced-motion: reduce){
+/* the one gate, character for character identical to the JS list */
+@media (prefers-reduced-motion: reduce){
   .hero{height:auto}
   .stage{display:none}
   .static-hero{
@@ -339,14 +336,14 @@ a{color:inherit}
     text-align:left;overflow:hidden;
   }
 }
-@media (orientation: portrait) and (pointer: coarse){
-  .hero{height:auto}
-  .stage{display:none}
-  .static-hero{
-    display:block;position:relative;
-    padding:clamp(104px,17vh,150px) var(--gut) clamp(48px,8vh,80px);
-    text-align:left;overflow:hidden;
-  }
+
+/* A phone scrolls a screen at a time with a thumb, not a notch at a time with
+   a wheel, so the same story wants less distance to travel through. */
+@media (max-width: 720px){
+  .hero{height:430svh}
+}
+@media (orientation: portrait) and (max-width: 1024px){
+  .hero{height:480svh}
 }
 
 .static-art{position:relative;height:min(46vh,340px);margin-bottom:clamp(24px,5vh,48px);perspective:1000px}
